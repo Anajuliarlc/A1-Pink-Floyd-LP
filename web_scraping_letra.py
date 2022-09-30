@@ -140,12 +140,14 @@ for album in discografia_album:
     
     nome_album_biggest = album.find(class_="header-name -biggest")
     nome_album_big = album.find(class_="header-name -big")
+    nome_album_medium = album.find(class_="header-name -medium")
     if nome_album_biggest != None:
         nome = nome_album_biggest.find("a").contents[0]
-        if nome != "Pulse (Ao Vivo)":
-            album_lista.append(nome)
     if nome_album_big != None:
         nome = nome_album_big.find("a").contents[0]
+        album_lista.append(nome)
+    if nome_album_medium != None:
+        nome = nome_album_medium.find("a").contents[0]
         album_lista.append(nome)
 
 #Coletar músicas nos álbuns, a ideia é achar em discografia_album cujo nome esteja em album lista, 
@@ -157,6 +159,7 @@ albuns_html = []
 for album in discografia_album:
     nome_album_biggest = album.find(class_="header-name -biggest")
     nome_album_big = album.find(class_="header-name -big")
+    nome_album_medium = album.find(class_="header-name -medium")
     if nome_album_biggest != None:
         nome = nome_album_biggest.find("a").contents[0]
         if nome in album_lista:
@@ -167,6 +170,11 @@ for album in discografia_album:
         if nome in album_lista:
             songs_album = album.find(class_="cnt-list-songs -counter js-song-list")
             albuns_html.append(songs_album)
+    if nome_album_medium != None:
+        nome = nome_album_medium.find("a").contents[0]
+        if nome in album_lista: 
+            songs_album = album.find(class_="cnt-list-songs -counter js-song-list")
+            albuns_html.append(songs_album)
 
 
 #Agora vamos trabalhar com albuns_html
@@ -175,14 +183,13 @@ for album in discografia_album:
 todas=[]
 for album in albuns_html:
     #vamos guardar aqui a música de cada álbum
-    
     lista_musica_album = []
     buscar_musica = album.find_all(class_="cnt-list-row -song is-visible")
+    print(buscar_musica)
     for musica in buscar_musica:
         buscar_nome = musica.find(class_="song-name").find("span").contents[0]
         lista_musica_album.append(buscar_nome)
         todas.append(buscar_nome)
-    print(lista_musica_album)
 print(len(todas))
 print(len(songs))
     
