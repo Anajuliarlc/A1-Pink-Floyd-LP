@@ -3,6 +3,8 @@
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
+import re
+
 # "https://www.letras.com/pink-floyd/"
 def coletar_nomes_musicas(url_letras_ponto_com):
     url = url_letras_ponto_com
@@ -203,8 +205,41 @@ def sales(url):
         #coletar vendas
         album_find_sales = album.find(class_="sales").contents[0]
         dic[album_name] = album_find_sales
-    serie = pd.Series(dic)
-    return serie
+    return dic
+
+def dataframe_sales(url: str):
+    """Organiza as informações coletadas sobre o número de vendas dos álbuns
+    e organiza em um Dataframe
+
+    :param url: Recebe a URL do site onde as informações serão pesquisadas
+    :type url: str
+    :return: Retorna um Dataframe com o álbum, ano de lançamento e n° de vendas
+    :rtype: pandas.core.frame.DataFrame
+    """ 
+    #Chama o dicionário com o resultado da pesquisa no site
+    album_ano_vendas = sales(url).items()
+    linhas_dataframe = list()
+    for linha in album_ano_vendas:
+        #Separa a chave composta por álbum e ano e
+        #o número de vendas (em formato string) de cada linha
+        album_ano, vendas_string = linha
+
+        #Pega o nome do álbum na string inteira
+        album = album_ano[:-7]
+        #Pega o ano de lançamento entre () na string
+        ano = int(album_ano[-5:-1])
+        
+        # Transforma número de vendas que está no padrão Sales: 100,000 em int
+        vendas_sem_sales = vendas_string.replace("Sales: ", "")
+        vendas_sem_virgula = vendas_sem_sales.replace(",", "")
+        numero_vendas = int(vendas_sem_virgula)
+
+        linha_dataframe = [album, ano, numero_vendas]
+        linhas_dataframe.append(linha_dataframe)
+
+    colunas = ["album", "ano_de_lancamento", "vendas"]
+    dataframe_vendas = pd.DataFrame(data = linhas_dataframe, columns = colunas)
+    return dataframe_vendas
 
 def criar_df(tipo):
   
@@ -219,12 +254,12 @@ def criar_df(tipo):
     ser_musica_tempo = tempo_musica()
 
     ser_album_premiacoes = premiacoes()
-    ser_album_a_mais_sales = sales("https://bestsellingalbums.org/artist/10433")
+    ser_album_a_mais_sales = dataframe_sales("https://bestsellingalbums.org/artist/10433")
     #DF INDEX MUSICAS
     dic_index_musicas = {"Mais Ouvida": ser_musica_mais_ouvidas,"Exibições": ser_musica_exibicao, "Duração": ser_musica_tempo, "Letra": ser_musica_letra, "URL": ser_musica_urls } 
     df_index_musicas = pd.DataFrame(dic_index_musicas)
     #DF INDEX ALBUM 
-    dic_index_album = {"Lançamento": ser_album_data, "Premiações": ser_album_premiacoes}
+    dic_index_album = {"lancamento": ser_album_data, "premiacoes": ser_album_premiacoes}
     df_index_album = pd.DataFrame(dic_index_album)
     if tipo == "album":
         return df_index_album
