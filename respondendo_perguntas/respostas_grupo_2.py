@@ -1,5 +1,3 @@
-from ast import Return
-from asyncio import streams
 import pandas as pd
 import re
 
@@ -301,15 +299,27 @@ def tit_alb_recorrente_letras(nome_arquivo: str):
     return dic_alb_cont_letras
 
 def tit_mus_recorrente_letras(nome_arquivo: str):
-    letras_mus = letras_todas_musicas(nome_arquivo, "informacoes_musicas",
-                                        "Letra")
+    """Retorna um dicionário com a chave sendo o nome da música
+        e o valor um dataframe com a contagem das palavras do título da
+        música nas letras das músicas
+
+    :param nome_arquivo: Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: str
+    :return: Dicionário com dataframe de contagem palavras do título da
+        música nas letras das músicas
+    :rtype: dict
+    """    
+    df_inf_alb_mus = pd.read_excel(nome_arquivo, "informacoes_musicas")
+    df_inf_alb_mus.set_index(df_inf_alb_mus["musicas"], inplace = True)
+    df_mus_let = df_inf_alb_mus["Letra"]
+    letras_mus = dict(df_mus_let)
     dic_mus_cont_letras = dict()
     for musica, letra in letras_mus.items():
         pal_tit_mus = palavras_letra_musica(musica).keys()
-        pal_letra = palavras_letra_musica(letra)
+        pal_letra = palavras_letra_musica(str(letra))
         dic_pal_tit = {"palavra":[], "contagem":[]}
         for palavra in pal_tit_mus:
-            if palavra in pal_tit_mus:
+            if palavra in pal_letra:
                 dic_pal_tit["palavra"].append(palavra)
                 dic_pal_tit["contagem"].append(pal_letra[palavra])
             else:
@@ -317,11 +327,4 @@ def tit_mus_recorrente_letras(nome_arquivo: str):
                 dic_pal_tit["contagem"].append("0")
         df_pal_tit_mus = pd.DataFrame(dic_pal_tit)
         dic_mus_cont_letras[musica] = df_pal_tit_mus
-    return dic_mus_cont_letras    
-
-print(tit_mus_recorrente_letras("../informacoes_pink_floyd.xlsx"))
-#print(top_3_pal_albuns("../informacoes_pink_floyd.xlsx"))
-#print(top_3_pal_todas_musicas("../informacoes_pink_floyd.xlsx"))
-#print(top_3_pal_titulos_albuns("../informacoes_pink_floyd.xlsx"))
-#print(top_3_pal_titulos_musicas("../informacoes_pink_floyd.xlsx"))
-#print(dataframe_inf_album_musica("../informacoes_pink_floyd.xlsx", "albuns_musicas", "informacoes_musicas", "albuns", "musicas"))
+    return dic_mus_cont_letras 
