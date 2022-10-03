@@ -246,10 +246,81 @@ def top_3_pal_todas_musicas(nome_arquivo: str):
     return top_3
 
 def top_3_pal_albuns(nome_arquivo: str):
-    df = dataframe_inf_album_musica(nome_arquivo, "albuns_musicas", "informacoes_musicas", "albuns", "musicas")
-    return(df)
+    """Retorna um dicionário com a chave sendo o nome dos álbuns
+        e o valor um dataframe com as top 3 palavras das letras
+        do álbum e sua contagem
 
-#print(letras_album(df, "Letra")["A Momentary Lapse Of Reason"])
+    :param nome_arquivo:  Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: str
+    :return: Dicionário com dataframe de top 3 palavras por álbum
+    :rtype: dict
+    """    
+    df_inf = dataframe_inf_album_musica(nome_arquivo, "albuns_musicas",
+                                         "informacoes_musicas", "albuns",
+                                         "musicas")
+    dic_letras_alb = letras_album(df_inf, "Letra")
+    dic_top_3_pal_album = dict()
+    for album, letras in dic_letras_alb.items():
+        #Une todas as letras em uma só string
+        letra_total = str(letras)
+        palavras = palavras_letra_musica(letra_total)
+        top_3_pal = palavras_mais_comuns(palavras)
+        dic_top_3_pal_album[album] = top_3_pal
+    return dic_top_3_pal_album
+
+def tit_alb_recorrente_letras(nome_arquivo: str):
+    """Retorna um dicionário com a chave sendo o nome dos álbuns
+        e o valor um dataframe com a contagem das palavras do título do
+        álbum nas letras das músicas por álbum
+
+    :param nome_arquivo: Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: str
+    :return: Dicionário com dataframe de contagem palavras do título do
+        álbum nas letras das músicas por álbum
+    :rtype: dict
+    """    
+    df_inf = dataframe_inf_album_musica(nome_arquivo, "albuns_musicas",
+                                        "informacoes_musicas", "albuns",
+                                        "musicas")
+    dic_letras_alb = letras_album(df_inf, "Letra")
+    dic_alb_cont_letras = dict()
+    for titulo_alb, letras in dic_letras_alb.items():
+        pal_titulo_alb = palavras_letra_musica(titulo_alb).keys()
+        letra_alb_todo = str(letras)
+        pal_let_alb_todo = palavras_letra_musica(letra_alb_todo)
+        dic_pal_tit = {"palavra":[], "contagem":[]}
+        for palavra in pal_titulo_alb:
+            if palavra in pal_let_alb_todo:
+                dic_pal_tit["palavra"].append(palavra)
+                dic_pal_tit["contagem"].append(pal_let_alb_todo[palavra])
+            else:
+                dic_pal_tit["palavra"].append(palavra)
+                dic_pal_tit["contagem"].append("0")
+        df_pal_tit = pd.DataFrame(dic_pal_tit)
+        dic_alb_cont_letras[titulo_alb] = df_pal_tit
+    return dic_alb_cont_letras
+
+def tit_mus_recorrente_letras(nome_arquivo: str):
+    letras_mus = letras_todas_musicas(nome_arquivo, "informacoes_musicas",
+                                        "Letra")
+    dic_mus_cont_letras = dict()
+    for musica, letra in letras_mus.items():
+        pal_tit_mus = palavras_letra_musica(musica).keys()
+        pal_letra = palavras_letra_musica(letra)
+        dic_pal_tit = {"palavra":[], "contagem":[]}
+        for palavra in pal_tit_mus:
+            if palavra in pal_tit_mus:
+                dic_pal_tit["palavra"].append(palavra)
+                dic_pal_tit["contagem"].append(pal_letra[palavra])
+            else:
+                dic_pal_tit["palavra"].append(palavra)
+                dic_pal_tit["contagem"].append("0")
+        df_pal_tit_mus = pd.DataFrame(dic_pal_tit)
+        dic_mus_cont_letras[musica] = df_pal_tit_mus
+    return dic_mus_cont_letras    
+
+print(tit_mus_recorrente_letras("../informacoes_pink_floyd.xlsx"))
+#print(top_3_pal_albuns("../informacoes_pink_floyd.xlsx"))
 #print(top_3_pal_todas_musicas("../informacoes_pink_floyd.xlsx"))
 #print(top_3_pal_titulos_albuns("../informacoes_pink_floyd.xlsx"))
 #print(top_3_pal_titulos_musicas("../informacoes_pink_floyd.xlsx"))
