@@ -14,7 +14,7 @@ def lista_palavras_excluidas():
     """
     lista_palavras_excluidas = ["A", "THE", "OF", "IN",
                                  "AT", "ON", "AN", "AND",
-                                 "TO", "PT."]
+                                 "IT", "TO", "PT."]
     return lista_palavras_excluidas
 
 def palavras_titulos(nome_arquivo: str, nome_folha: str, nome_coluna: str):
@@ -36,19 +36,56 @@ def palavras_titulos(nome_arquivo: str, nome_folha: str, nome_coluna: str):
         return "Base de dados não encontrada"
     except ValueError:
         return "Tabela não encontrada"
+    #Divide a letra inteira em palavras
     for titulo in nomes_albuns[nome_coluna]:
         lista_palavras_titulo = re.split(" ", titulo)
+        #Realiza a contagem das palavras
         for palavra in lista_palavras_titulo:
             palavra_uppercase = palavra.upper()
             if palavra_uppercase not in cont_palavras:
                 cont_palavras[palavra_uppercase] = 1
             else:
                 cont_palavras[palavra_uppercase] += 1
+    #Retira palavras que não devem ser consideradas
     lista_excluidas = lista_palavras_excluidas()
     for palavra in lista_excluidas:
         if palavra in cont_palavras:
             del cont_palavras[palavra]
     return cont_palavras
+
+def palavras_letra_musica(letra_musica: str):
+    """Faz a contagem das palavras na letra de música
+
+    :param letra_musica: Letra inteira da música
+    :type letra_musica: str
+    :return: Dicionário com a contagem das palavras
+    :rtype: dict
+    """ 
+    #Retira os caracteres que não são considerados parte da palavra
+    lista_especiais = ["[", "]", "\"", "'", ":", "!", "?", ","]
+    for especial in lista_especiais:
+        letra_musica = letra_musica.replace(especial, "")
+    #Divide a letra inteira em palavras
+    lista_palavras = re.split("\s+", letra_musica)
+    cont_palavras = dict()
+    #Realiza a contagem das palavras
+    for palavra in lista_palavras:
+        palavra_uppercase = palavra.upper()
+        if palavra_uppercase not in cont_palavras:
+            cont_palavras[palavra_uppercase] = 1
+        else:
+            cont_palavras[palavra_uppercase] += 1
+    #Retira palavras que não devem ser consideradas
+    lista_excluidas = lista_palavras_excluidas()
+    for palavra in lista_excluidas:
+        if palavra in cont_palavras:
+            del cont_palavras[palavra]
+    return cont_palavras
+
+df = pd.read_excel("../informacoes_pink_floyd.xlsx", "informacoes_musicas")
+letras = df["Letra"].copy()
+letra = letras[1]
+print(palavras_letra_musica(letra))
 
 def palavras_mais_comuns(dicionario_palavras_contadas: dict):
     """A função recebe um dicionário de palavras e contagens
@@ -98,5 +135,5 @@ def top_3_pal_titulos_musicas(nome_arquivo: str):
     top_3 = palavras_mais_comuns(dicionario)
     return top_3
 
-print(top_3_pal_titulos_albuns("../informacoes_pink_floyd.xlsx"))
-print(top_3_pal_titulos_musicas("../informacoes_pink_floyd.xlsx"))
+#print(top_3_pal_titulos_albuns("../informacoes_pink_floyd.xlsx"))
+#print(top_3_pal_titulos_musicas("../informacoes_pink_floyd.xlsx"))
