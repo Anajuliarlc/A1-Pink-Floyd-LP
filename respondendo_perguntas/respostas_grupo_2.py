@@ -129,6 +129,42 @@ def pal_todas_musicas(nome_arquivo: str, nome_folha: str, nome_coluna: str):
                 cont_palavras[palavra] += palavras_letra[palavra]
     return cont_palavras
 
+def dataframe_inf_album_musica(nome_arquivo: str, nome_folha_mus_alb: str,
+                                nome_folha_inf_mus: str, nome_coluna_alb: str,
+                                nome_coluna_mus: str):
+    """Cria um dataframe com as informações das músicas indexadas por álbum
+
+    :param nome_arquivo: Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: str
+    :param nome_folha_mus_alb: Nome da folha do excel onde está
+        a relação músicas com álbuns
+    :type nome_folha_mus_alb: str
+    :param nome_folha_inf_mus:  Nome da folha do excel onde estão
+        as informações das músicas
+    :type nome_folha_inf_mus: str
+    :param nome_coluna_alb: Nome da coluna na folha onde está a lista de álbuns
+    :type nome_coluna_alb: str
+    :param nome_coluna_mus: Nome da coluna na folha onde está
+        a lista de músicas com letras
+    :type nome_coluna_mus: str
+    :return: Retorna um dataframe com as informações das músicas e
+        multi-index de álbuns e músicas
+    :rtype: pandas.core.frame.DataFrame
+    """    
+    df_mus_album = pd.read_excel(nome_arquivo, nome_folha_mus_alb)
+    df_inf_mus = pd.read_excel(nome_arquivo, nome_folha_inf_mus)
+    df_inf_alb_mus = pd.merge(df_mus_album, df_inf_mus, on = nome_coluna_mus)
+    ind_albuns = df_inf_alb_mus[nome_coluna_alb]
+    ind_musicas = df_inf_alb_mus[nome_coluna_mus]
+    indices = pd.MultiIndex.from_arrays([ind_albuns, ind_musicas],
+                                         names = (nome_coluna_alb,
+                                                    nome_coluna_mus))
+    df_inf_alb_mus.drop([nome_coluna_alb, nome_coluna_mus],
+                         inplace=True,
+                         axis=1)
+    df_inf_alb_mus.set_index(indices, inplace = True)
+    return df_inf_alb_mus
+
 def palavras_mais_comuns(dicionario_palavras_contadas: dict):
     """A função recebe um dicionário de palavras e contagens
     e retorna um dataframe com as 3 palavras mais comuns
@@ -192,3 +228,4 @@ def top_3_pal_todas_musicas(nome_arquivo: str):
 #print(top_3_pal_todas_musicas("../informacoes_pink_floyd.xlsx"))
 #print(top_3_pal_titulos_albuns("../informacoes_pink_floyd.xlsx"))
 #print(top_3_pal_titulos_musicas("../informacoes_pink_floyd.xlsx"))
+#print(dataframe_inf_album_musica("../informacoes_pink_floyd.xlsx", "albuns_musicas", "informacoes_musicas", "albuns", "musicas"))
