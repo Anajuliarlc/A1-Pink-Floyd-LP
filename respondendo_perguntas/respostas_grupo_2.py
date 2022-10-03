@@ -30,14 +30,14 @@ def palavras_titulos(nome_arquivo: str, nome_folha: str, nome_coluna: str):
     :rtype: dict
     """
     try:
-        nomes_albuns = pd.read_excel(nome_arquivo, nome_folha)
-        cont_palavras = dict()
+        titulos = pd.read_excel(nome_arquivo, nome_folha)
     except FileNotFoundError:
         return "Base de dados não encontrada"
     except ValueError:
         return "Tabela não encontrada"
+    cont_palavras = dict()    
     #Divide a letra inteira em palavras
-    for titulo in nomes_albuns[nome_coluna]:
+    for titulo in titulos[nome_coluna]:
         lista_palavras_titulo = re.split(" ", titulo)
         #Realiza a contagem das palavras
         for palavra in lista_palavras_titulo:
@@ -62,7 +62,8 @@ def palavras_letra_musica(letra_musica: str):
     :rtype: dict
     """ 
     #Retira os caracteres que não são considerados parte da palavra
-    lista_especiais = ["[", "]", "\"", "'", ":", "!", "?", ","]
+    lista_especiais = ["[", "]", "\"", "'", ":", "!",
+                         "?", ",", "(", ")", ".", "\\"]
     for especial in lista_especiais:
         letra_musica = letra_musica.replace(especial, "")
     #Divide a letra inteira em palavras
@@ -82,10 +83,51 @@ def palavras_letra_musica(letra_musica: str):
             del cont_palavras[palavra]
     return cont_palavras
 
-df = pd.read_excel("../informacoes_pink_floyd.xlsx", "informacoes_musicas")
-letras = df["Letra"].copy()
-letra = letras[1]
-print(palavras_letra_musica(letra))
+def letras_todas_musicas(nome_arquivo: str, nome_folha: str, nome_coluna: str):
+    """Faz a contagem das palavras de todas as letras de música
+
+    :param nome_arquivo: Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: str
+    :param nome_folha: Nome da folha do excel onde está a lista de letras
+    :type nome_folha: str
+    :param nome_coluna: Nome da coluna na folha onde está a lista de letras
+    :type nome_coluna: str
+    :return: Dicionário com a contagem das palavras
+    :rtype: dict
+    """
+    try:
+        informacoes_musicas = pd.read_excel(nome_arquivo, nome_folha)
+    except FileNotFoundError:
+        return "Base de dados não encontrada"
+    except ValueError:
+        return "Tabela não encontrada"
+    lista_letras = list()
+    for letra in informacoes_musicas[nome_coluna]:
+        lista_letras.append(letra)
+    return lista_letras
+
+def pal_todas_musicas(nome_arquivo: str, nome_folha: str, nome_coluna: str):
+    """Faz a contagem das palavras de todas as letras de música
+
+    :param nome_arquivo: Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: str
+    :param nome_folha: Nome da folha do excel onde está a lista de letras
+    :type nome_folha: str
+    :param nome_coluna: Nome da coluna na folha onde está a lista de letras
+    :type nome_coluna: str
+    :return: Dicionário com a contagem das palavras
+    :rtype: dict
+    """    
+    lista_letras = letras_todas_musicas(nome_arquivo, nome_folha, nome_coluna)
+    cont_palavras = dict()
+    for letra in lista_letras:
+        palavras_letra = palavras_letra_musica(letra)
+        for palavra in palavras_letra:
+            if palavra not in cont_palavras:
+                cont_palavras[palavra] = palavras_letra[palavra]
+            else:
+                cont_palavras[palavra] += palavras_letra[palavra]
+    return cont_palavras
 
 def palavras_mais_comuns(dicionario_palavras_contadas: dict):
     """A função recebe um dicionário de palavras e contagens
@@ -135,5 +177,18 @@ def top_3_pal_titulos_musicas(nome_arquivo: str):
     top_3 = palavras_mais_comuns(dicionario)
     return top_3
 
+def top_3_pal_todas_musicas(nome_arquivo: str):
+    """Retorna as 3 palavras mais comuns em todas letras de músicas
+
+    :param nome_arquivo: Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: str
+    :return: Dataframe com as 3 palavras mais comuns nos titulos e sua contagem
+    :rtype: pandas.core.frame.DataFrame
+    """    
+    dicionario = pal_todas_musicas(nome_arquivo, "informacoes_musicas", "Letra")
+    top_3 = palavras_mais_comuns(dicionario)
+    return top_3
+
+#print(top_3_pal_todas_musicas("../informacoes_pink_floyd.xlsx"))
 #print(top_3_pal_titulos_albuns("../informacoes_pink_floyd.xlsx"))
 #print(top_3_pal_titulos_musicas("../informacoes_pink_floyd.xlsx"))
