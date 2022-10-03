@@ -165,6 +165,26 @@ def dataframe_inf_album_musica(nome_arquivo: str, nome_folha_mus_alb: str,
     df_inf_alb_mus.set_index(indices, inplace = True)
     return df_inf_alb_mus
 
+def letras_album(df_inf_alb_mus: pd.core.frame.DataFrame, nome_col_letras: str):
+    """Cria um dicionário com as letras de músicas por álbum
+
+    :param df_inf_alb_mus: Dataframe com as informações das músicas e
+        multi-index de álbuns e músicas
+    :type df_inf_alb_mus: pd.core.frame.DataFrame
+    :param nome_col_letras: Nome da coluna onde estão as letras das músicas
+    :type nome_col_letras: str
+    :return: Dicionário com as letras das músicas de cada álbum
+    :rtype: dict
+    """
+    albuns = list(df_inf_alb_mus.index.unique(0))
+    df_letras = df_inf_alb_mus[nome_col_letras]
+    dic_album_letras = dict()
+    for album in albuns:
+        mascara_album = df_letras.index.get_level_values(0) == album
+        letras_album = list(df_letras[mascara_album])
+        dic_album_letras[album] = letras_album
+    return dic_album_letras
+
 def palavras_mais_comuns(dicionario_palavras_contadas: dict):
     """A função recebe um dicionário de palavras e contagens
     e retorna um dataframe com as 3 palavras mais comuns
@@ -225,6 +245,11 @@ def top_3_pal_todas_musicas(nome_arquivo: str):
     top_3 = palavras_mais_comuns(dicionario)
     return top_3
 
+def top_3_pal_albuns(nome_arquivo: str):
+    df = dataframe_inf_album_musica(nome_arquivo, "albuns_musicas", "informacoes_musicas", "albuns", "musicas")
+    return(df)
+
+#print(letras_album(df, "Letra")["A Momentary Lapse Of Reason"])
 #print(top_3_pal_todas_musicas("../informacoes_pink_floyd.xlsx"))
 #print(top_3_pal_titulos_albuns("../informacoes_pink_floyd.xlsx"))
 #print(top_3_pal_titulos_musicas("../informacoes_pink_floyd.xlsx"))
