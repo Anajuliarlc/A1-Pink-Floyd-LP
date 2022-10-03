@@ -6,21 +6,26 @@ import re
 def lista_palavras_excluidas():
     """Para fim de análise mais profundas a lista abaixo contêm as preposições
     e artigos mais comuns na língua inglesa que devem ser excluídas.
+    Foram adicionadas também palavras que descrevem versões do álbum 
+    (ex: PT. :(parte))
 
     :return: Retorna umas lista com as palavras que devem ser excluidas
     :rtype: list
     """
     lista_palavras_excluidas = ["A", "THE", "OF", "IN",
-                                 "AT", "ON", "AN", "AND"]
+                                 "AT", "ON", "AN", "AND",
+                                 "TO", "PT."]
     return lista_palavras_excluidas
 
-def palavras_titulos_albuns(nome_arquivo: str, nome_folha: str):
-    """Faz a contagem das palavras nos títulos dos álbuns
+def palavras_titulos(nome_arquivo: str, nome_folha: str, nome_coluna: str):
+    """Faz a contagem das palavras nos títulos
 
     :param nome_arquivo: Nome do arquivo onde os dados estão contidos
     :type nome_arquivo: str
-    :param nome_folha: Nome da folha do excel onde está a lista dos albuns
+    :param nome_folha: Nome da folha do excel onde está a lista de títulos
     :type nome_folha: str
+    :param nome_coluna: Nome da coluna na folha onde está a lista de títulos
+    :type nome_coluna: str
     :return: Dicionário com a contagem das palavras
     :rtype: dict
     """
@@ -30,8 +35,8 @@ def palavras_titulos_albuns(nome_arquivo: str, nome_folha: str):
     except FileNotFoundError:
         return "Base de dados não encontrada"
     except ValueError:
-        return "Tabela de albuns não encontrada"
-    for titulo in nomes_albuns["albuns"]:
+        return "Tabela não encontrada"
+    for titulo in nomes_albuns[nome_coluna]:
         lista_palavras_titulo = re.split(" ", titulo)
         for palavra in lista_palavras_titulo:
             palavra_uppercase = palavra.upper()
@@ -69,5 +74,29 @@ def palavras_mais_comuns(dicionario_palavras_contadas: dict):
     top_3.reset_index(inplace = True, drop = True)
     return top_3
 
-dicionario = palavras_titulos_albuns("../informacoes_pink_floyd.xlsx", "albuns")
-print(palavras_mais_comuns(dicionario))
+def top_3_pal_titulos_albuns(nome_arquivo: str):
+    """Retorna as 3 palavras mais comuns nos títulos dos albuns das musicas
+
+    :param nome_arquivo: Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: str
+    :return: Dataframe com as 3 palavras mais comuns nos titulos e sua contagem
+    :rtype: pandas.core.frame.DataFrame
+    """    
+    dicionario = palavras_titulos(nome_arquivo, "albuns", "albuns")
+    top_3 = palavras_mais_comuns(dicionario)
+    return top_3
+
+def top_3_pal_titulos_musicas(nome_arquivo: str):
+    """Retorna as 3 palavras mais comuns nos títulos dos albuns das musicas
+
+    :param nome_arquivo: Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: str
+    :return: Dataframe com as 3 palavras mais comuns nos titulos e sua contagem
+    :rtype: pandas.core.frame.DataFrame
+    """    
+    dicionario = palavras_titulos(nome_arquivo, "musicas", "musicas")
+    top_3 = palavras_mais_comuns(dicionario)
+    return top_3
+
+print(top_3_pal_titulos_albuns("../informacoes_pink_floyd.xlsx"))
+print(top_3_pal_titulos_musicas("../informacoes_pink_floyd.xlsx"))
