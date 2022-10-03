@@ -246,10 +246,28 @@ def top_3_pal_todas_musicas(nome_arquivo: str):
     return top_3
 
 def top_3_pal_albuns(nome_arquivo: str):
-    df = dataframe_inf_album_musica(nome_arquivo, "albuns_musicas", "informacoes_musicas", "albuns", "musicas")
-    return(df)
+    """Retorna um dicionário com a chave sendo o nome dos álbuns
+        e o valor um dataframe com as top 3 palavras das letras
+        do álbum e sua contagem
 
-#print(letras_album(df, "Letra")["A Momentary Lapse Of Reason"])
+    :param nome_arquivo:  Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: str
+    :return: Dicionário com dataframe de top 3 palavras por álbum
+    :rtype: dict
+    """    
+    df_inf = dataframe_inf_album_musica(nome_arquivo, "albuns_musicas",
+                                         "informacoes_musicas", "albuns",
+                                         "musicas")
+    dic_letras_alb = letras_album(df_inf, "Letra")
+    dic_top_3_pal_album = dict()
+    for album, letras in dic_letras_alb.items():
+        letra_total = str(letras)
+        palavras = palavras_letra_musica(letra_total)
+        top_3_pal = palavras_mais_comuns(palavras)
+        dic_top_3_pal_album[album] = top_3_pal
+    return dic_top_3_pal_album
+
+#print(top_3_pal_albuns("../informacoes_pink_floyd.xlsx"))
 #print(top_3_pal_todas_musicas("../informacoes_pink_floyd.xlsx"))
 #print(top_3_pal_titulos_albuns("../informacoes_pink_floyd.xlsx"))
 #print(top_3_pal_titulos_musicas("../informacoes_pink_floyd.xlsx"))
