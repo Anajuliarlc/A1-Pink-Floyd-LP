@@ -72,6 +72,55 @@ def top_3_vis_mus_alb(df_inf_alb_mus: pd.core.frame.DataFrame):
         dic_album_vis[album] = df_mus_vis
     return dic_album_vis
 
+def top_3_dur_mus_alb(df_inf_alb_mus: pd.core.frame.DataFrame):
+    """Cria um dicionário que possui as músicas mais duradouras
+        e menos duradouras por album e seu tempo de duração
 
-#df = dataframe_inf_album_musica("../informacoes_pink_floyd.xlsx", "albuns_musicas","informacoes_musicas", "albuns", "musicas")
-#print(top_3_vis_mus_alb(df))
+    :param df_inf_alb_mus: Dataframe com as informações das músicas e
+        multi-index de álbuns e músicas
+    :type df_inf_alb_mus: pd.core.frame.DataFrame
+    :return: Dicionário com dataframes de músicas mais duradouras
+        e menos duradouras por album
+    :rtype: dict
+    """    
+    nome_col_dur = "Duração"
+    albuns = list(df_inf_alb_mus.index.unique(0))
+    df_alb_mus_ord = df_inf_alb_mus.sort_values(ascending = False,
+                                                 by = nome_col_dur).copy()
+    df_dur = df_alb_mus_ord[nome_col_dur]
+    dic_album_dur = dict()
+    for album in albuns:
+        mascara_album = df_dur.index.get_level_values(0) == album
+        dur_album = df_dur[mascara_album]
+        head_3 = dur_album.head(3).copy()
+        tail_3 = dur_album.tail(3).copy()
+        musicas_head_3 = list(head_3.index.get_level_values(1))
+        musicas_tail_3 = list(tail_3.index.get_level_values(1))
+        dur_head_3 = list(head_3)
+        tempo_head_3 = list()
+        for duracao in dur_head_3:
+            duracao = str(duracao)
+            segundos = duracao[-2:]
+            minutos = duracao[:-2]
+            tempo = minutos + "min " + segundos + "s"
+            tempo_head_3.append(tempo)
+        dur_tail_3 = list(tail_3)
+        tempo_tail_3 = list()
+        for duracao in dur_tail_3:
+            duracao = str(duracao)
+            segundos = duracao[-2:]
+            minutos = duracao[:-2]
+            tempo = minutos + "min " + segundos + "s"
+            tempo_tail_3.append(tempo)
+        df_mus_dur_head_3 = pd.DataFrame(tempo_head_3, index = musicas_head_3,
+                                         columns = [nome_col_dur])
+        df_mus_dur_tail_3 = pd.DataFrame(tempo_tail_3, index = musicas_tail_3,
+                                         columns = [nome_col_dur])
+        df_mus_dur = {"Mais Vistas": df_mus_dur_head_3,
+                        "Menos Vistas": df_mus_dur_tail_3}
+        dic_album_dur[album] = df_mus_dur
+    return dic_album_dur
+
+
+df = dataframe_inf_album_musica("../informacoes_pink_floyd.xlsx", "albuns_musicas","informacoes_musicas", "albuns", "musicas")
+print(top_3_dur_mus_alb(df))
