@@ -37,18 +37,18 @@ def dataframe_inf_album_musica(nome_arquivo: str, nome_folha_mus_alb: str,
     df_inf_alb_mus.set_index(indices, inplace = True)
     return df_inf_alb_mus
 
-def top_3_vis_mus_alb(df_inf_alb_mus: pd.core.frame.DataFrame, nome_col_vis: str):
-    """Cria um dicionário com as informações de músicas por álbum
+def top_3_vis_mus_alb(df_inf_alb_mus: pd.core.frame.DataFrame):
+    """Cria um dicionário que possui as músicas mais ouvidas
+        e menos ouvidas por album e seu número de visualizações
 
     :param df_inf_alb_mus: Dataframe com as informações das músicas e
         multi-index de álbuns e músicas
     :type df_inf_alb_mus: pd.core.frame.DataFrame
-    :param nome_col_letras: Nome da coluna onde estão o número de exibições
-        da música
-    :type nome_col_letras: str
-    :return: Dicionário com as letras das músicas de cada álbum
+    :return: Dicionário com dataframes de músicas mais ouvidas
+        e menos ouvidas por album
     :rtype: dict
     """
+    nome_col_vis = "Exibições"
     albuns = list(df_inf_alb_mus.index.unique(0))
     df_alb_mus_ord = df_inf_alb_mus.sort_values(ascending = False,
                                                  by = nome_col_vis).copy()
@@ -57,13 +57,21 @@ def top_3_vis_mus_alb(df_inf_alb_mus: pd.core.frame.DataFrame, nome_col_vis: str
     for album in albuns:
         mascara_album = df_vis.index.get_level_values(0) == album
         vis_album = df_vis[mascara_album]
-        top_3 = vis_album.head(3)
-        musicas = list(top_3.index.get_level_values(1))
-        visualizacoes = list(top_3)
-        df_mus_vis = pd.DataFrame(visualizacoes, index = musicas,
-                                    columns = [nome_col_vis])
+        head_3 = vis_album.head(3).copy()
+        tail_3 = vis_album.tail(3).copy()
+        musicas_head_3 = list(head_3.index.get_level_values(1))
+        musicas_tail_3 = list(tail_3.index.get_level_values(1))
+        vis_head_3 = list(head_3)
+        vis_tail_3 = list(tail_3)
+        df_mus_vis_head_3 = pd.DataFrame(vis_head_3, index = musicas_head_3,
+                                         columns = [nome_col_vis])
+        df_mus_vis_tail_3 = pd.DataFrame(vis_tail_3, index = musicas_tail_3,
+                                         columns = [nome_col_vis])
+        df_mus_vis = {"Mais Vistas": df_mus_vis_head_3,
+                        "Menos Vistas": df_mus_vis_tail_3}
         dic_album_vis[album] = df_mus_vis
     return dic_album_vis
 
+
 #df = dataframe_inf_album_musica("../informacoes_pink_floyd.xlsx", "albuns_musicas","informacoes_musicas", "albuns", "musicas")
-#print(top_3_vis_mus_alb(df, "Exibições"))
+#print(top_3_vis_mus_alb(df))
