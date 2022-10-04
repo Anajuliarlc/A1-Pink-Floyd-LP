@@ -121,6 +121,14 @@ def top_3_dur_mus_alb(df_inf_alb_mus: pd.core.frame.DataFrame):
         dic_album_dur[album] = df_mus_dur
     return dic_album_dur
 
-
-df = dataframe_inf_album_musica("../informacoes_pink_floyd.xlsx", "albuns_musicas","informacoes_musicas", "albuns", "musicas")
-print(top_3_dur_mus_alb(df))
+def top_3_vis_mus(nome_arquivo: str):
+    df_inf_mus = pd.read_excel(nome_arquivo, "informacoes_musicas")
+    nome_col_vis = "Exibições"
+    musicas = list(df_inf_mus.index)
+    df_inf_mus_ord = df_inf_mus.sort_values(ascending = False,
+                                             by = nome_col_vis).copy()
+    return musicas
+    
+print(top_3_vis_mus("../informacoes_pink_floyd.xlsx"))
+#df = dataframe_inf_album_musica("../informacoes_pink_floyd.xlsx", "albuns_musicas","informacoes_musicas", "albuns", "musicas")
+#print(top_3_dur_mus_alb(df))
