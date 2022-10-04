@@ -118,6 +118,10 @@ def top_3_dur_mus_alb(nome_arquivo: str):
             duracao = str(duracao)
             segundos = duracao[-2:]
             minutos = duracao[:-2]
+            if minutos != "":
+                tempo = minutos + "min " + segundos + "s"
+            else:
+                tempo = segundos + "s"
             tempo = minutos + "min " + segundos + "s"
             tempo_tail_3.append(tempo)
         df_mus_dur_head_3 = pd.DataFrame(tempo_head_3, index = musicas_head_3,
@@ -155,9 +159,57 @@ def top_3_vis_mus(nome_arquivo: str):
     df_vis_mus_tail_3 = pd.DataFrame(vis_tail_3, index = musicas_tail_3,
                                          columns = [nome_col_vis])
 
-    df_mus_dur = {"Mais Vistas": df_vis_mus_head_3,
+    df_mus_vis = {"Mais Vistas": df_vis_mus_head_3,
                     "Menos Vistas": df_vis_mus_tail_3}
-    return df_mus_dur
+    return df_mus_vis
+
+def top_3_dur_mus(nome_arquivo: str):
+    """Cria um dicionário que possui as músicas mais ouvidas
+        e menos ouvidas de todas e seu número de visualizações
+
+    :param nome_arquivo: Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: str
+    :return: Retorna um dicionário com um dataframe das músicas mais vistas
+        e outro com as menos ouvidas
+    :rtype: dict
+    """    
+    df_inf_mus = pd.read_excel(nome_arquivo, "informacoes_musicas")
+    nome_col_dur = "Duração"
+    nome_col_mus = "musicas"
+    df_inf_mus_ord = df_inf_mus.sort_values(ascending = False,
+                                             by = nome_col_dur).copy()
+    head_3 = df_inf_mus_ord.copy().head(3)
+    tail_3 = df_inf_mus_ord.copy().tail(3)
+    dur_head_3 = list(head_3[nome_col_dur])
+    dur_tail_3 = list(tail_3[nome_col_dur])
+    tempo_head_3 = list()
+    for duracao in dur_head_3:
+        duracao = str(duracao)
+        segundos = duracao[-2:]
+        minutos = duracao[:-2]
+        tempo = minutos + "min " + segundos + "s"
+        tempo_head_3.append(tempo)
+    tempo_tail_3 = list()
+    for duracao in dur_tail_3:
+        duracao = str(duracao)
+        segundos = duracao[-2:]
+        minutos = duracao[:-2]
+        if minutos != "":
+            tempo = minutos + "min " + segundos + "s"
+        else:
+            tempo = segundos + "s"
+        tempo_tail_3.append(tempo)
+    musicas_head_3 = list(head_3[nome_col_mus])
+    musicas_tail_3 = list(tail_3[nome_col_mus])
+    df_dur_mus_head_3 = pd.DataFrame(tempo_head_3, index = musicas_head_3,
+                                         columns = [nome_col_dur])
+    df_dur_mus_tail_3 = pd.DataFrame(tempo_tail_3, index = musicas_tail_3,
+                                         columns = [nome_col_dur])
     
+    df_mus_dur = {"Mais Duradouras": df_dur_mus_head_3,
+                    "Menos Duradouras": df_dur_mus_tail_3}
+    return df_mus_dur
+
+#print(top_3_dur_mus("../informacoes_pink_floyd.xlsx"))
 #print(top_3_vis_mus("../informacoes_pink_floyd.xlsx"))
 #print(top_3_dur_mus_alb("../informacoes_pink_floyd.xlsx"))
