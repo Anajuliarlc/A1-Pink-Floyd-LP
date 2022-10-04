@@ -236,8 +236,3 @@ def top_3_alb_prem(nome_arquivo: str):
     df_top_3 = df_ord_pre.head(3)
     df_top_3_alb_prem = df_top_3[["album",nome_col_prem]]
     return df_top_3_alb_prem
-
-#print(top_3_alb_prem("../informacoes_pink_floyd.xlsx"))
-#print(top_3_dur_mus("../informacoes_pink_floyd.xlsx"))
-#print(top_3_vis_mus("../informacoes_pink_floyd.xlsx"))
-#print(top_3_dur_mus_alb("../informacoes_pink_floyd.xlsx"))
