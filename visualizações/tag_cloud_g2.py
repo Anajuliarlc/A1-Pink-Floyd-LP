@@ -1,5 +1,9 @@
 from wordcloud import WordCloud
 import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+from os import path
 import re
 
 
@@ -27,3 +31,13 @@ def tag_1(texto):
     
 pergunta_1(nome_arquivo, "albuns", "albuns")
 tag_1(pergunta_1(nome_arquivo, "albuns", "albuns"))
+
+from PIL import Image
+
+def tag_1pf(texto):
+    mask = np.array(Image.open(path.join("pf_darkside.png")))
+    mask_wc = WordCloud(background_color=None, mask = mask)
+    mask_wc.generate(texto)
+    mask_wc.to_file(path.join("tag_1mm.png"))
+
+tag_1pf(pergunta_1(nome_arquivo, "albuns", "albuns"))
