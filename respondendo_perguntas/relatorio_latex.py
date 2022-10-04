@@ -1,4 +1,5 @@
-import respostas_grupo_2 as rg
+import respostas_grupo_1 as rg1
+import respostas_grupo_2 as rg2
 from fpdf import FPDF
 from PyPDF2 import PdfFileMerger, PdfFileReader
 import warnings
@@ -54,7 +55,7 @@ def add_cont_palavras_alb(dicionario: dict, obj_pdf: FPDF):
         except:
             add_texto("Esse álbum não obedece o padrão UTF-8.", obj_pdf)
 
-def criar_relatorio():
+def criar_relatorio_g2():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     pdf = FPDF("P", "mm", "A4")
     pdf.add_page()
@@ -64,44 +65,59 @@ def criar_relatorio():
     nome_arquivo = "informacoes_pink_floyd.xlsx"
 
     add_texto("Quais são as palavras mais comuns nos títulos dos Álbuns?", pdf)
-    grupo2_pergunta_1 = rg.top_3_pal_titulos_albuns(nome_arquivo)
+    grupo2_pergunta_1 = rg2.top_3_pal_titulos_albuns(nome_arquivo)
     add_cont_palavras(grupo2_pergunta_1, pdf)
     add_texto("\n\n", pdf)
 
     add_texto("Quais são as palavras mais comuns nos títulos das músicas?", pdf)
-    grupo2_pergunta_2 = rg.top_3_pal_titulos_musicas(nome_arquivo)
+    grupo2_pergunta_2 = rg2.top_3_pal_titulos_musicas(nome_arquivo)
     add_cont_palavras(grupo2_pergunta_2, pdf)
     add_texto("\n\n", pdf)
     
     add_texto("Quais são as palavras mais comuns nas letras das músicas, por Álbum?", pdf)
-    grupo2_pergunta_3 = rg.top_3_pal_albuns(nome_arquivo)
+    grupo2_pergunta_3 = rg2.top_3_pal_albuns(nome_arquivo)
     add_cont_palavras_alb(grupo2_pergunta_3, pdf)
     add_texto("\n\n", pdf)
 
     add_texto("Quais são as palavras mais comuns nas letras das músicas, em toda a discografia?", pdf)
-    grupo2_pergunta_4 = rg.top_3_pal_todas_musicas(nome_arquivo)
+    grupo2_pergunta_4 = rg2.top_3_pal_todas_musicas(nome_arquivo)
     add_cont_palavras(grupo2_pergunta_4, pdf)
     add_texto("\n\n", pdf)
 
     add_texto("O título de um álbum é tema recorrente nas letras?", pdf)
-    grupo2_pergunta_5 = rg.tit_alb_recorrente_letras(nome_arquivo)
+    grupo2_pergunta_5 = rg2.tit_alb_recorrente_letras(nome_arquivo)
     add_cont_palavras_alb(grupo2_pergunta_5, pdf)
     add_texto("\n\n", pdf)
 
     add_texto("O título de uma música é tema recorrente nas letras?", pdf)
-    grupo2_pergunta_6 = rg.tit_mus_recorrente_letras(nome_arquivo)
+    grupo2_pergunta_6 = rg2.tit_mus_recorrente_letras(nome_arquivo)
     add_cont_palavras_alb(grupo2_pergunta_6, pdf)
     add_texto("\n\n", pdf)
 
-    pdf.output("relatorio.pdf")
+    pdf.output("relatorio_g2.pdf")
 
 
 def relatorio_final():
     merger = PdfFileMerger()
     leitor = PdfFileReader
-    criar_relatorio()
+    criar_relatorio_g2()
     merger.append(leitor(open("capa_a1_LP.pdf", 'rb')))
-    merger.append(leitor(open("relatorio.pdf", 'rb')))
+    merger.append(leitor(open("relatorio_g2.pdf", 'rb')))
     merger.write("relatoriofinal.pdf")
 
-relatorio_final()
+#relatorio_final()
+
+#def criar_relatorio_g1():
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+pdf = FPDF("P", "mm", "A4")
+pdf.add_page()
+pdf.set_auto_page_break(auto=True, margin = 15)
+pdf.set_font("helvetica", size=12)
+
+nome_arquivo = "informacoes_pink_floyd.xlsx"
+
+add_texto("Músicas mais ouvidas e músicas menos ouvidas por Álbum", pdf)
+grupo1_pergunta_1 = rg1.top_3_vis_mus_alb(nome_arquivo)
+print(grupo1_pergunta_1)
+
+pdf.output("relatorio_g1.pdf")
