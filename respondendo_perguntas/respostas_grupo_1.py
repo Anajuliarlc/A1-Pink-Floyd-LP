@@ -210,6 +210,34 @@ def top_3_dur_mus(nome_arquivo: str):
                     "Menos Duradouras": df_dur_mus_tail_3}
     return df_mus_dur
 
+def top_3_alb_prem(nome_arquivo: str):
+    """Cria um dataframe com os 3 álbuns mais premiados de todos os tempos
+
+    :param nome_arquivo: Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: str
+    :return: Dataframe com os álbuns mais premiados e suas premiações
+    :rtype: pandas.core.frame.Dataframe
+    """    
+    nome_col_prem = "premiacoes"
+    df_alb_pre = pd.read_excel(nome_arquivo, nome_col_prem)
+    cont_prem = list()
+    for premiacoes in df_alb_pre[nome_col_prem]:
+        #Cada prêmio é separado por vírgula
+        #Se for diferente de vazio, representado por "['-']"
+        if premiacoes != "['-']":
+            contagem = premiacoes.count(",") + 1
+            cont_prem.append(contagem)
+        else:
+            cont_prem.append(0)
+    dic_cont_prem = {"contagem": cont_prem}
+    df_cont_prem = pd.DataFrame(dic_cont_prem)
+    df_final = df_alb_pre.join(df_cont_prem)
+    df_ord_pre = df_final.sort_values(ascending = False, by = "contagem")
+    df_top_3 = df_ord_pre.head(3)
+    df_top_3_alb_prem = df_top_3[["album",nome_col_prem]]
+    return df_top_3_alb_prem
+
+#print(top_3_alb_prem("../informacoes_pink_floyd.xlsx"))
 #print(top_3_dur_mus("../informacoes_pink_floyd.xlsx"))
 #print(top_3_vis_mus("../informacoes_pink_floyd.xlsx"))
 #print(top_3_dur_mus_alb("../informacoes_pink_floyd.xlsx"))
