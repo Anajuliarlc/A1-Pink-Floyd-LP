@@ -55,6 +55,61 @@ def add_cont_palavras_alb(dicionario: dict, obj_pdf: FPDF):
         except:
             add_texto("Esse álbum não obedece o padrão UTF-8.", obj_pdf)
 
+
+def acessar_dataframe(dataframe, obj_pdf):
+        try:
+            exibicoes = list(dataframe["Exibições"])
+            n_musicas = len(exibicoes)
+            contador = 0  
+            while contador < n_musicas:
+                musica = list(dataframe.index)
+                exibicao = exibicoes[contador]
+                musica = str(musica[contador])
+                exibicao = str(exibicao)
+                mensagem = "   Musica: " + musica + "     Exibições: " + exibicao
+                add_texto(mensagem, obj_pdf)
+                contador += 1
+        except:
+            add_texto("Esse álbum não obedece o padrão UTF-8.", obj_pdf)
+
+def acessar_titulo(dicionario, obj_pdf):
+    for album, dic_exibi in dicionario.items():
+        add_texto(album, obj_pdf)
+        for titulo, dataframe in dic_exibi.items():
+            titulo = str(titulo)
+            add_texto("\n", obj_pdf)
+            add_texto(titulo, obj_pdf)
+            add_texto("\n", obj_pdf)
+            acessar_dataframe(dataframe, obj_pdf)
+            
+def acessar_duracao(dataframe, obj_pdf):
+        duracoes = list(dataframe["Duração"])
+        n_musicas = len(duracoes)
+        contador = 0 
+        try:
+            while contador < n_musicas:
+                musica = list(dataframe.index)
+                duracao = duracoes[contador]
+                musica = str(musica[contador])
+                duracao = str(duracao)
+                mensagem = "   Musica: " + musica + "     Duração: " + duracao
+                add_texto(mensagem, obj_pdf)
+                contador += 1
+        except:
+            add_texto("Esse álbum não obedece o padrão UTF-8.", obj_pdf)
+
+
+def acessar_titulo_duracao(dicionario, obj_pdf):
+    for album, dic_dura in dicionario.items():
+        add_texto(album, obj_pdf)
+        for titulo, dataframe in dic_dura.items():
+            titulo = str(titulo)
+            add_texto("\n", obj_pdf)
+            add_texto(titulo, obj_pdf)
+            add_texto("\n", obj_pdf)
+            acessar_duracao(dataframe, obj_pdf)
+            
+
 def criar_relatorio_g2():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     pdf = FPDF("P", "mm", "A4")
@@ -94,16 +149,17 @@ def criar_relatorio_g2():
     add_cont_palavras_alb(grupo2_pergunta_6, pdf)
     add_texto("\n\n", pdf)
 
-    pdf.output("relatorio_g2.pdf")
+    pdf.output("arquivos_relatorio/relatorio_g2.pdf")
 
 
 def relatorio_final():
     merger = PdfFileMerger()
     leitor = PdfFileReader
     criar_relatorio_g2()
-    merger.append(leitor(open("capa_a1_LP.pdf", 'rb')))
-    merger.append(leitor(open("relatorio_g2.pdf", 'rb')))
-    merger.write("relatoriofinal.pdf")
+    merger.append(leitor(open("arquivos_relatorio/capa_a1_LP.pdf", 'rb')))
+    merger.append(leitor(open("arquivos_relatorio/relatorio_g1.pdf", "rb")))
+    merger.append(leitor(open("arquivos_relatorio/relatorio_g2.pdf", 'rb')))
+    merger.write("arquivos_relatorio/relatoriofinal.pdf")
 
 #relatorio_final()
 
@@ -118,6 +174,16 @@ nome_arquivo = "informacoes_pink_floyd.xlsx"
 
 add_texto("Músicas mais ouvidas e músicas menos ouvidas por Álbum", pdf)
 grupo1_pergunta_1 = rg1.top_3_vis_mus_alb(nome_arquivo)
-print(grupo1_pergunta_1)
+acessar_titulo(grupo1_pergunta_1, pdf)
 
-pdf.output("relatorio_g1.pdf")
+add_texto("Músicas mais longas e músicas mais curtas por Álbum", pdf)
+grupo1_pergunta_2 = rg1.top_3_dur_mus_alb(nome_arquivo)
+acessar_titulo_duracao(grupo1_pergunta_2, pdf)
+
+add_texto("Músicas mais ouvidas e músicas menos ouvidas [em toda a história da banda]", pdf)
+grupo1_pergunta_3 = rg1.
+
+
+
+pdf.output("arquivos_relatorio/relatorio_g1.pdf")
+print(pdf.page_no())
