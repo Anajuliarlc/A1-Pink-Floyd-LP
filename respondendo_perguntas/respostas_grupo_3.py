@@ -58,4 +58,3 @@ def var_letra_mus(nome_arquivo: str):
     df_novas_colunas = pd.DataFrame(novas_colunas, index = lista_musicas)
     return df_novas_colunas
 
-#print(var_letra_mus("informacoes_pink_floyd.xlsx"))
