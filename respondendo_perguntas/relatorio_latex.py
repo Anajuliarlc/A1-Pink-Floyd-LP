@@ -5,7 +5,48 @@ from PyPDF2 import PdfFileMerger, PdfFileReader
 import warnings
 import pandas as pd
 
+def add_texto(texto: str, obj_pdf: FPDF):
+    """Função que pega o texto que é dado e imprime no pdf.
+
+    :param texto: texto da pergunta
+    :type texto: str
+    :return: retorna a pergunta no pdf
+    :rtype: PDF
+    """
+    texto_pdf = obj_pdf.cell(0, 10, texto, ln=1)
+    return texto_pdf
+
+def acessar_dataframe(dataframe, obj_pdf):
+    """_summary_
+
+    :param dataframe: _description_
+    :type dataframe: _type_
+    :param obj_pdf: _description_
+    :type obj_pdf: _type_
+    """    
+    try:
+        exibicoes = list(dataframe["Exibições"])
+        n_musicas = len(exibicoes)
+        contador = 0
+        while contador < n_musicas:
+            musica = list(dataframe.index)
+            exibicao = exibicoes[contador]
+            musica = str(musica[contador])
+            exibicao = str(exibicao)
+            mensagem = "   Musica: " + musica + "     Exibições: " + exibicao
+            add_texto(mensagem, obj_pdf)
+            contador += 1
+    except:
+        add_texto("Essa música não obedece o padrão UTF-8.", obj_pdf)
+
 def acessar_titulo(dicionario, obj_pdf):
+    """_summary_
+
+    :param dicionario: _description_
+    :type dicionario: _type_
+    :param obj_pdf: _description_
+    :type obj_pdf: _type_
+    """    
     for album, dic_exibi in dicionario.items():
         add_texto(album, obj_pdf)
         for titulo, dataframe in dic_exibi.items():
@@ -17,6 +58,13 @@ def acessar_titulo(dicionario, obj_pdf):
 
 
 def acessar_duracao(dataframe, obj_pdf):
+    """_summary_
+
+    :param dataframe: _description_
+    :type dataframe: _type_
+    :param obj_pdf: _description_
+    :type obj_pdf: _type_
+    """    
     duracoes = list(dataframe["Duração"])
     n_musicas = len(duracoes)
     contador = 0
@@ -30,10 +78,17 @@ def acessar_duracao(dataframe, obj_pdf):
             add_texto(mensagem, obj_pdf)
             contador += 1
     except:
-        add_texto("Esse álbum não obedece o padrão UTF-8.", obj_pdf)
+        add_texto("Essa música não obedece o padrão UTF-8.", obj_pdf)
 
 
 def acessar_titulo_duracao(dicionario, obj_pdf):
+    """_summary_
+
+    :param dicionario: _description_
+    :type dicionario: _type_
+    :param obj_pdf: _description_
+    :type obj_pdf: _type_
+    """    
     for album, dic_dura in dicionario.items():
         add_texto(album, obj_pdf)
         for titulo, dataframe in dic_dura.items():
@@ -45,6 +100,13 @@ def acessar_titulo_duracao(dicionario, obj_pdf):
 
 
 def vis_mus_historia(dicionario, obj_pdf):
+    """_summary_
+
+    :param dicionario: _description_
+    :type dicionario: _type_
+    :param obj_pdf: _description_
+    :type obj_pdf: _type_
+    """    
     for titulo, dataframe in dicionario.items():
         titulo = str(titulo)
         add_texto("\n", obj_pdf)
@@ -54,6 +116,13 @@ def vis_mus_historia(dicionario, obj_pdf):
 
 
 def dur_mus_historia(dicionario, obj_pdf):
+    """_summary_
+
+    :param dicionario: _description_
+    :type dicionario: _type_
+    :param obj_pdf: _description_
+    :type obj_pdf: _type_
+    """    
     for titulo, dataframe in dicionario.items():
         titulo = str(titulo)
         add_texto("\n", obj_pdf)
@@ -63,6 +132,13 @@ def dur_mus_historia(dicionario, obj_pdf):
 
 
 def acessar_premio(dataframe, obj_pdf):
+    """_summary_
+
+    :param dataframe: _description_
+    :type dataframe: _type_
+    :param obj_pdf: _description_
+    :type obj_pdf: _type_
+    """    
     premios = list(dataframe["premiacoes"])
     albuns = list(dataframe["album"])
     n_album = len(premios)
@@ -81,18 +157,6 @@ def acessar_premio(dataframe, obj_pdf):
             contador += 1
     except:
         add_texto("Esse álbum não obedece o padrão UTF-8.", obj_pdf)
-
-        
-def add_texto(texto: str, obj_pdf: FPDF):
-    """Função que pega o texto que é dado e imprime no pdf.
-
-    :param texto: texto da pergunta
-    :type texto: str
-    :return: retorna a pergunta no pdf
-    :rtype: PDF
-    """
-    texto_pdf = obj_pdf.cell(0, 10, texto, ln=1)
-    return texto_pdf
 
 
 def add_cont_palavras(dataframe: pd.core.frame.DataFrame, obj_pdf: FPDF):
@@ -131,26 +195,12 @@ def add_cont_palavras_alb(dicionario: dict, obj_pdf: FPDF):
             add_texto(titulo, obj_pdf)
             add_cont_palavras(dataframe, obj_pdf)
         except:
-            add_texto("Esse álbum não obedece o padrão UTF-8.", obj_pdf)
+            add_texto("Essa música não obedece o padrão UTF-8.", obj_pdf)
 
-
-def acessar_dataframe(dataframe, obj_pdf):
-    try:
-        exibicoes = list(dataframe["Exibições"])
-        n_musicas = len(exibicoes)
-        contador = 0
-        while contador < n_musicas:
-            musica = list(dataframe.index)
-            exibicao = exibicoes[contador]
-            musica = str(musica[contador])
-            exibicao = str(exibicao)
-            mensagem = "   Musica: " + musica + "     Exibições: " + exibicao
-            add_texto(mensagem, obj_pdf)
-            contador += 1
-    except:
-        add_texto("Esse álbum não obedece o padrão UTF-8.", obj_pdf)
 
 def criar_relatorio_g1():
+    """_summary_
+    """    
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     pdf = FPDF("P", "mm", "A4")
     pdf.add_page()
@@ -189,6 +239,8 @@ def criar_relatorio_g1():
 
 
 def criar_relatorio_g2():
+    """_summary_
+    """    
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     pdf = FPDF("P", "mm", "A4")
     pdf.add_page()
@@ -232,6 +284,8 @@ def criar_relatorio_g2():
 
 
 def relatorio_final():
+    """_summary_
+    """    
     merger = PdfFileMerger()
     leitor = PdfFileReader
     criar_relatorio_g1()
