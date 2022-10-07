@@ -89,4 +89,12 @@ A NICE PAIR
 IS THERE ANYBODY OUT THERE? THE WALL: LIVE 1980-1981
 Shine On
 Discovery
+
+Existiam músicas que eram a junção do album inteiro, essas músicas foram retiradas
+A Saucerful Of Secrets
+Atom Heart Mother
+Hey Hey Rise Up
+The Division Bell
+The Return Of The Son Of Nothing
+
 """
