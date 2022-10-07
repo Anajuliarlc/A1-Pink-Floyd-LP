@@ -1,8 +1,9 @@
+from itertools import count
 import pandas as pd
 import re
 
 def palavras_letra_musica(letra_musica: str):
-    """Faz a contagem das palavras na letra de música
+    """ Faz a contagem das palavras na letra de música
 
     :param letra_musica: Letra inteira da música
     :type letra_musica: str
@@ -28,7 +29,7 @@ def palavras_letra_musica(letra_musica: str):
 
 #Variaedade de Palavras Nas Músicas
 def var_letra_mus(nome_arquivo: str):
-    """Cria um Dataframe com o número de palavras e a razao de
+    """ Cria um Dataframe com o número de palavras e a razao de
         número de palavras / número de palavras diferentes para
         ser utilizado na criação de um gráfico com essa relação
 
@@ -81,4 +82,30 @@ def top_5_vendas_album(nome_arquivo: str):
                  "Menos Vendidos": df_tail_5}
     return dic_top_5
 
-#print(top_5_vendas_album("informacoes_pink_floyd.xlsx"))
+def albuns_decada(nome_arquivo: str):
+    """ Cria um dataframe com o número de álbuns lançados por década
+
+    :param nome_arquivo: Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: strr
+    :return: Dataframe com o número de álbuns por décadas
+    :rtype: pandas.core.frame.DataFrame
+    """    
+    df = pd.read_excel(nome_arquivo, "vendas")
+    anos = list(df["ano_de_lancamento"])
+    ano_min = min(anos)
+    ano_max = max(anos)
+    decada_min = (ano_min // 10) * 10
+    decada_max = ((ano_max // 10) + 1) * 10
+    decadas = list(range(decada_min, decada_max, 10))
+    cont_alb_dec = list()
+    for decada in decadas:
+        contagem = 0
+        for ano in anos:
+            if ano > decada and ano <= decada + 10:
+                contagem += 1
+        cont_alb_dec.append(contagem)
+    dic_cont = {"N° Álbuns": cont_alb_dec}
+    df_cont_dec = pd.DataFrame(dic_cont, index = decadas)
+    return df_cont_dec
+
+print(albuns_decada("informacoes_pink_floyd.xlsx"))
