@@ -235,7 +235,7 @@ def criar_relatorio_g1():
     add_texto("\n\n", pdf)
 
     pdf.output("arquivos_relatorio/relatorio_g1.pdf")
-    print(pdf.page_no())
+    return pdf.page_no()
 
 
 def criar_relatorio_g2():
@@ -280,7 +280,23 @@ def criar_relatorio_g2():
     add_texto("\n\n", pdf)
 
     pdf.output("arquivos_relatorio/relatorio_g2.pdf")
-    print(pdf.page_no())
+    return pdf.page_no()
+
+def sumario(n_pag1, n_pag2):
+    """_summary_
+    """    
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    pdf = FPDF("P", "mm", "A4")
+    pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.set_font("helvetica", size=12)
+
+    add_texto("Sumário", pdf)
+    add_texto("\n\n", pdf)
+    add_texto("Grupo de perguntas 1: página 3", pdf)
+    add_texto(f"Grupo de perguntas 2: página {n_pag1}", pdf)
+
+    pdf.output("arquivos_relatorio/sumario.pdf")
 
 
 def relatorio_final():
@@ -288,9 +304,13 @@ def relatorio_final():
     """    
     merger = PdfFileMerger()
     leitor = PdfFileReader
-    criar_relatorio_g1()
-    criar_relatorio_g2()
+    n_pag1 = criar_relatorio_g1()
+    n_pag1 = str(n_pag1 + 1)
+    n_pag2 = criar_relatorio_g2()
+    n_pag2 = str(n_pag2)
+    sumario(n_pag1, n_pag2)
     merger.append(leitor(open("arquivos_relatorio/capa_a1_LP.pdf", 'rb')))
+    merger.append(leitor(open("arquivos_relatorio/sumario.pdf", 'rb')))
     merger.append(leitor(open("arquivos_relatorio/relatorio_g1.pdf", "rb")))
     merger.append(leitor(open("arquivos_relatorio/relatorio_g2.pdf", 'rb')))
     merger.write("arquivos_relatorio/relatoriofinal.pdf")
