@@ -58,3 +58,27 @@ def var_letra_mus(nome_arquivo: str):
     df_novas_colunas = pd.DataFrame(novas_colunas, index = lista_musicas)
     return df_novas_colunas
 
+#Álbuns mais e menos vendidos da história
+def top_5_vendas_album(nome_arquivo: str):
+    """ Cria um dicionário com um dataframe com os álbuns mais vendidos
+        do banco de dados e um com os menos vendidos.
+
+    :param nome_arquivo: Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: str
+    :return: Dicionário com um dataframe dos álbuns mais vendidos
+        e um com os álbuns menos vendidos
+    :rtype: dict
+    """    
+    df = pd.read_excel(nome_arquivo, "vendas")
+    lista_vendas = list(df["vendas"])
+    lista_albuns = list(df["album"])
+    dic_vendas = {"vendas": lista_vendas}
+    df_vend = pd.DataFrame(dic_vendas, index = lista_albuns)
+    df_ord_vend = df_vend.sort_values(by = "vendas", ascending = False)
+    df_head_5 = df_ord_vend.head(5)
+    df_tail_5 = df_ord_vend.tail(5)
+    dic_top_5 = {"Mais Vendidos": df_head_5,
+                 "Menos Vendidos": df_tail_5}
+    return dic_top_5
+
+#print(top_5_vendas_album("informacoes_pink_floyd.xlsx"))
