@@ -27,7 +27,7 @@ def palavras_letra_musica(letra_musica: str):
             cont_palavras[palavra_uppercase] += 1
     return cont_palavras
 
-#Variaedade de Palavras Nas Músicas
+#Variedade de palavras nas músicas
 def var_letra_mus(nome_arquivo: str):
     """ Cria um Dataframe com o número de palavras e a razao de
         número de palavras / número de palavras diferentes para
@@ -82,6 +82,7 @@ def top_5_vendas_album(nome_arquivo: str):
                  "Menos Vendidos": df_tail_5}
     return dic_top_5
 
+#Contagem de álbuns por decada
 def albuns_decada(nome_arquivo: str):
     """ Cria um dataframe com o número de álbuns lançados por década
 
@@ -107,5 +108,3 @@ def albuns_decada(nome_arquivo: str):
     dic_cont = {"N° Álbuns": cont_alb_dec}
     df_cont_dec = pd.DataFrame(dic_cont, index = decadas)
     return df_cont_dec
-
-print(albuns_decada("informacoes_pink_floyd.xlsx"))
