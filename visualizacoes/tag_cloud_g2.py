@@ -92,6 +92,3 @@ def tag_cloud_3():
 """Obs: As 3 funções acima são práticamente iguais, a diferença delas está nos 
 arquivos e nas configurações de cada wordcloud.
 """
-tag_cloud_1()
-tag_cloud_2()
-tag_cloud_3()
