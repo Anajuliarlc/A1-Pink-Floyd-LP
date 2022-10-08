@@ -9,6 +9,26 @@ import seaborn as sb
 import matplotlib.pyplot as plt
 import pandas as pd
 
+def graf_dur_vis(nome_arquivo: str):
+    df = pd.read_excel(nome_arquivo, "informacoes_musicas")
+
+    nome_grafico = "graf_dur_vis.png"
+    caminho_graf = "../arquivos_relatorio/" + nome_grafico
+
+    df.reset_index(inplace = True)
+
+    ax = sb.scatterplot(x = df["Duração"],
+                         y = df["Exibições"],
+                         color = "black", markers = False) 
+
+    ax.set(xlabel = "Duração", ylabel = "Exibições")
+    fig = ax.get_figure()
+    fig.savefig(caminho_graf)
+
+    return nome_grafico
+
+print(graf_dur_vis("../informacoes_pink_floyd.xlsx"))
+
 def graf_var_letra_mus(nome_arquivo: str):
     """Gera um gráfico da relação entre o número de palavras
         e número de palavras diferentes nas músicas
