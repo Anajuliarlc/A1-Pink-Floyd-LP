@@ -1,15 +1,22 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sb
-from respondendo_perguntas import respostas_grupo_3 as g3
-from respondendo_perguntas import respostas_grupo_2 as g2
-from respondendo_perguntas import respostas_grupo_1 as g1
+
 import sys
 
 sys.path.insert(0, "../")
 
+from respondendo_perguntas import respostas_grupo_3 as g3
+from respondendo_perguntas import respostas_grupo_2 as g2
+from respondendo_perguntas import respostas_grupo_1 as g1
 
 def graf_dur_vis(nome_arquivo: str):
+    """Gera um gráfico com a relação entre a duração da música
+        e o número de visualizações
+
+    :param nome_arquivo: Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: str
+    """    
     df = pd.read_excel(nome_arquivo, "informacoes_musicas")
 
     nome_grafico = "graf_dur_vis.png"
@@ -17,17 +24,14 @@ def graf_dur_vis(nome_arquivo: str):
 
     df.reset_index(inplace=True)
 
-    ax = sb.scatterplot(x=df["Duração"],
-                        y=df["Exibições"],
+    ax = sb.scatterplot(x=df["Duração"]/100,
+                        y=df["Exibições"]/ 1000000,
                         color="black", markers=False)
 
-    ax.set(xlabel="Duração", ylabel="Exibições")
+    ax.set(xlabel = "Duração (minutos)",
+            ylabel="Exibições (Milhões de Visualizações)")
     fig = ax.get_figure()
     fig.savefig(caminho_graf)
-
-    return nome_grafico
-
-# print(graf_dur_vis("../informacoes_pink_floyd.xlsx"))
 
 
 def graf_var_letra_mus(nome_arquivo: str):
@@ -36,12 +40,10 @@ def graf_var_letra_mus(nome_arquivo: str):
 
     :param nome_arquivo: Nome do arquivo onde os dados estão contidos
     :type nome_arquivo: str
-    :return: Nome do arquivo da imagem gerada
-    :rtype: str
     """
     df = g3.var_letra_mus(nome_arquivo)
     nome_grafico = "graf_var_letra_mus.png"
-    caminho_graf = "./arquivos_relatorio/" + nome_grafico
+    caminho_graf = "../arquivos_relatorio/" + nome_grafico
 
     df.reset_index(inplace=True)
 
@@ -74,18 +76,11 @@ def graf_var_letra_mus(nome_arquivo: str):
     fig = ax.get_figure()
     fig.savefig(caminho_graf)
 
-    return nome_grafico
-
-# print(graf_var_letra_mus("../informacoes_pink_floyd.xlsx"))
-
-
 def graf_alb_decada(nome_arquivo: str):
     """Gera um gráfico da relação de álbuns lançados por década
 
     :param nome_arquivo: Nome do arquivo onde os dados estão contidos
     :type nome_arquivo: str
-    :return: Nome do arquivo da imagem gerada
-    :rtype: str
     """
     df = g3.albuns_decada(nome_arquivo)
     df.reset_index(inplace=True)
@@ -110,5 +105,3 @@ def graf_alb_decada(nome_arquivo: str):
 
     fig = ax.get_figure()
     fig.savefig(caminho_graf)
-
-    return nome_grafico
