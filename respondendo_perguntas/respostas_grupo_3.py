@@ -87,7 +87,7 @@ def albuns_decada(nome_arquivo: str):
     """ Cria um dataframe com o número de álbuns lançados por década
 
     :param nome_arquivo: Nome do arquivo onde os dados estão contidos
-    :type nome_arquivo: strr
+    :type nome_arquivo: str
     :return: Dataframe com o número de álbuns por décadas
     :rtype: pandas.core.frame.DataFrame
     """    
