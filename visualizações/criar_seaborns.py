@@ -9,6 +9,54 @@ import seaborn as sb
 import matplotlib.pyplot as plt
 import pandas as pd
 
+def graf_var_letra_mus(nome_arquivo: str):
+    """Gera um gráfico da relação entre o número de palavras
+        e número de palavras diferentes nas músicas
+
+    :param nome_arquivo: Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: str
+    :return: Nome do arquivo da imagem gerada
+    :rtype: str
+    """    
+    df = g3.var_letra_mus(nome_arquivo)
+    nome_grafico = "graf_var_letra_mus.png"
+    caminho_graf = "../arquivos_relatorio/" + nome_grafico
+
+    df.reset_index(inplace = True)
+
+    ax = plt.subplots()
+    ax = sb.scatterplot(x = df["N°Palavras"],
+                         y = df["N°Palavras Diferentes"],
+                         color = "black")
+
+    df.sort_values(by = "N°Palavras Diferentes",
+                     ascending = False, inplace = True)
+    df_musica_max = df.copy().head(1)
+
+    maximo = max(df["N°Palavras Diferentes"])
+    lista_menores_max = list(df["N°Palavras Diferentes"])
+    lista_menores_max.remove(maximo)
+
+    df = df.replace(lista_menores_max, None)
+
+    ax = sb.scatterplot(x = df["N°Palavras"],
+                         y = df["N°Palavras Diferentes"],
+                         color = "blue")
+    ax.invert_yaxis()
+
+    musica_max = str(df_musica_max["index"].values)
+    musica_max_x = int(df_musica_max["N°Palavras"].values)
+    musica_max_y = int(df_musica_max["N°Palavras Diferentes"].values)
+    ax.annotate(musica_max, (musica_max_x - 50, musica_max_y - 30))  
+
+    ax.set(xlabel="N° Palavras", ylabel="N° Palavras Diferentes")
+    fig = ax.get_figure()
+    fig.savefig(caminho_graf)
+
+    return nome_grafico
+
+#print(graf_var_letra_mus("../informacoes_pink_floyd.xlsx"))  
+
 def graf_alb_decada(nome_arquivo: str):
     """Gera um gráfico da relação de álbuns lançados por década
 
@@ -42,5 +90,4 @@ def graf_alb_decada(nome_arquivo: str):
     fig.savefig(caminho_graf)
     
     return nome_grafico
-
-print(graf_alb_decada("../informacoes_pink_floyd.xlsx"))                       
+                      
