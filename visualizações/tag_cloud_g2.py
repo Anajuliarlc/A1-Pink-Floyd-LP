@@ -30,14 +30,14 @@ def tag_1(texto):
     wc.to_file("tag_1.png")
     
 pergunta_1(nome_arquivo, "albuns", "albuns")
-tag_1(pergunta_1(nome_arquivo, "albuns", "albuns"))
+#tag_1(pergunta_1(nome_arquivo, "albuns", "albuns"))
 
 from PIL import Image
 
 def tag_1pf(texto):
-    mask = np.array(Image.open(path.join("pf_darkside.png")))
-    mask_wc = WordCloud(background_color=None, mask = mask)
+    mask = np.array(Image.open("./arquivos_relatorio/pf_darksidemod.png"))
+    mask_wc = WordCloud(background_color="black", max_words=2000, mask = mask, contour_width=3, contour_color='steelblue')
     mask_wc.generate(texto)
-    mask_wc.to_file(path.join("tag_1mm.png"))
+    mask_wc.to_file("./arquivos_relatorio/tag_1m.png")
 
 tag_1pf(pergunta_1(nome_arquivo, "albuns", "albuns"))
