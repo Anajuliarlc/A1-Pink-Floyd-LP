@@ -29,32 +29,29 @@ def palavras_letra_musica(letra_musica: str):
 
 #Variedade de palavras nas músicas
 def var_letra_mus(nome_arquivo: str):
-    """ Cria um Dataframe com o número de palavras e a razao de
-        número de palavras / número de palavras diferentes para
-        ser utilizado na criação de um gráfico com essa relação
+    """ Cria um Dataframe com o número de palavras 
+        e o número de palavras diferentes
 
     :param nome_arquivo: Nome do arquivo onde os dados estão contidos
     :type nome_arquivo: str
-    :return: Dataframe com o número de palavras e a razao de
-        número de palavras / número de palavras diferentes
+    :return: Dataframe com o número de palavras
+        e o número de palavras diferentes
     :rtype: pandas.core.frame.DataFrame
     """    
     df = pd.read_excel(nome_arquivo, "informacoes_musicas")
     lista_letras = list(df["Letra"])
     lista_n_pal = list()
-    lista_razoes = list()
+    lista_n_pal_dif = list()
     for letra in lista_letras:
         pal_letra = palavras_letra_musica(letra)
-        n_pal = len(pal_letra.keys())
-        n_pal_dif = sum(pal_letra.values())
-        razao = n_pal / n_pal_dif
-        razao = round(razao, 2)
+        n_pal_dif = len(pal_letra.keys())
+        n_pal = sum(pal_letra.values())
         lista_n_pal.append(n_pal)
-        lista_razoes.append(razao)
+        lista_n_pal_dif.append(n_pal_dif)
     col_n_pal = "N°Palavras"
-    col_razao = "Razao N°Pal/N°Pal Diferentes"
+    col_n_pal_dif = "N°Palavras Diferentes"
     novas_colunas = {col_n_pal: lista_n_pal,
-                     col_razao: lista_razoes}
+                     col_n_pal_dif: lista_n_pal_dif}
     lista_musicas = list(df["musicas"])
     df_novas_colunas = pd.DataFrame(novas_colunas, index = lista_musicas)
     return df_novas_colunas
@@ -87,7 +84,7 @@ def albuns_decada(nome_arquivo: str):
     """ Cria um dataframe com o número de álbuns lançados por década
 
     :param nome_arquivo: Nome do arquivo onde os dados estão contidos
-    :type nome_arquivo: strr
+    :type nome_arquivo: str
     :return: Dataframe com o número de álbuns por décadas
     :rtype: pandas.core.frame.DataFrame
     """    
