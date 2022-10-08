@@ -1,9 +1,13 @@
+import pandas as pd
+import warnings
+from PyPDF2 import PdfFileMerger, PdfFileReader
+from fpdf import FPDF
 import respostas_grupo_1 as rg1
 import respostas_grupo_2 as rg2
-from fpdf import FPDF
-from PyPDF2 import PdfFileMerger, PdfFileReader
-import warnings
-import pandas as pd
+import sys
+
+sys.path.insert(0, "./")
+
 
 def add_texto(texto: str, obj_pdf: FPDF):
     """Função que pega o texto que é dado e imprime no pdf.
@@ -18,6 +22,7 @@ def add_texto(texto: str, obj_pdf: FPDF):
     texto_pdf = obj_pdf.cell(0, 10, texto, ln=1)
     return texto_pdf
 
+
 def acessar_exibicao(dataframe: pd.core.frame.DataFrame, obj_pdf: FPDF):
     """Função que recebe um dataframe e para cada música, ele pega a exibição. A 
     função também faz uma mensagem no pdf com o título da música e com o número de 
@@ -29,7 +34,7 @@ def acessar_exibicao(dataframe: pd.core.frame.DataFrame, obj_pdf: FPDF):
     :type dataframe: pd.core.frame.DataFrame
     :param obj_pdf: PDF
     :type obj_pdf: FPDF
-    """    
+    """
     try:
         exibicoes = list(dataframe["Exibições"])
         n_musicas = len(exibicoes)
@@ -45,6 +50,7 @@ def acessar_exibicao(dataframe: pd.core.frame.DataFrame, obj_pdf: FPDF):
     except:
         add_texto("Essa música não obedece o padrão UTF-8.", obj_pdf)
 
+
 def acessar_titulo_exibicao(dicionario: dict, obj_pdf: FPDF):
     """Função recebe um dicionário e acessa o nome do álbum, imprimindo-o no PDF. 
     Logo após, ele acessa o título do segundo dicionário e também o imprime. 
@@ -57,7 +63,7 @@ def acessar_titulo_exibicao(dicionario: dict, obj_pdf: FPDF):
     :type dicionario: dict
     :param obj_pdf: PDF
     :type obj_pdf: FPDF
-    """    
+    """
     for album, dic_exibi in dicionario.items():
         add_texto(album, obj_pdf)
         for titulo, dataframe in dic_exibi.items():
@@ -79,7 +85,7 @@ def acessar_duracao(dataframe: pd.core.frame.DataFrame, obj_pdf: FPDF):
     :type dataframe: : pd.core.frame.DataFrame
     :param obj_pdf: PDF
     :type obj_pdf: FPDF
-    """    
+    """
     duracoes = list(dataframe["Duração"])
     n_musicas = len(duracoes)
     contador = 0
@@ -93,7 +99,7 @@ def acessar_duracao(dataframe: pd.core.frame.DataFrame, obj_pdf: FPDF):
             add_texto(mensagem, obj_pdf)
             contador += 1
     except:
-        add_texto("Essa música não obedece o padrão UTF-8.", obj_pdf): FPDF
+        add_texto("Essa música não obedece o padrão UTF-8.", obj_pdf)
 
 
 def acessar_titulo_duracao(dicionario: dict, obj_pdf: FPDF):
@@ -108,7 +114,7 @@ def acessar_titulo_duracao(dicionario: dict, obj_pdf: FPDF):
     :type dicionario: dict
     :param obj_pdf: PDF
     :type obj_pdf: FPDF
-    """    
+    """
     for album, dic_dura in dicionario.items():
         add_texto(album, obj_pdf)
         for titulo, dataframe in dic_dura.items():
@@ -129,7 +135,7 @@ def vis_mus_historia(dicionario: dict, obj_pdf: FPDF):
     :type dicionario: dict
     :param obj_pdf: PDF
     :type obj_pdf: FPDF
-    """    
+    """
     for titulo, dataframe in dicionario.items():
         titulo = str(titulo)
         add_texto("\n", obj_pdf)
@@ -148,7 +154,7 @@ def dur_mus_historia(dicionario: dict, obj_pdf: FPDF):
     :type dicionario: dict
     :param obj_pdf: PDF
     :type obj_pdf: FPDF
-    """    
+    """
     for titulo, dataframe in dicionario.items():
         titulo = str(titulo)
         add_texto("\n", obj_pdf)
@@ -168,7 +174,7 @@ def acessar_premio(dataframe: pd.core.frame.DataFrame, obj_pdf: FPDF):
     :type dataframe: : pd.core.frame.DataFrame
     :param obj_pdf: PDF
     :type obj_pdf: FPDF
-    """    
+    """
     premios = list(dataframe["premiacoes"])
     albuns = list(dataframe["album"])
     n_album = len(premios)
@@ -245,31 +251,33 @@ def criar_relatorio_g1():
 
     nome_arquivo = "informacoes_pink_floyd.xlsx"
 
-    #Resposta da pergunta 1 grupo 1
+    # Resposta da pergunta 1 grupo 1
     add_texto("Músicas mais ouvidas e músicas menos ouvidas por Álbum", pdf)
     grupo1_pergunta_1 = rg1.top_3_vis_mus_alb(nome_arquivo)
     acessar_titulo_exibicao(grupo1_pergunta_1, pdf)
     add_texto("\n\n", pdf)
 
-    #Resposta da pergunta 2 grupo 1
+    # Resposta da pergunta 2 grupo 1
     add_texto("Músicas mais longas e músicas mais curtas por Álbum", pdf)
     grupo1_pergunta_2 = rg1.top_3_dur_mus_alb(nome_arquivo)
     acessar_titulo_duracao(grupo1_pergunta_2, pdf)
     add_texto("\n\n", pdf)
 
-    #Resposta da pergunta 3 grupo 1
-    add_texto("Músicas mais ouvidas e músicas menos ouvidas [em toda a história da banda]", pdf)
+    # Resposta da pergunta 3 grupo 1
+    add_texto(
+        "Músicas mais ouvidas e músicas menos ouvidas [em toda a história da banda]", pdf)
     grupo1_pergunta_3 = rg1.top_3_vis_mus(nome_arquivo)
     vis_mus_historia(grupo1_pergunta_3, pdf)
     add_texto("\n\n", pdf)
 
-    #Resposta da pergunta 4 grupo 1
-    add_texto("Músicas mais longas e músicas mais curtas [em toda a história da banda]", pdf)
+    # Resposta da pergunta 4 grupo 1
+    add_texto(
+        "Músicas mais longas e músicas mais curtas [em toda a história da banda]", pdf)
     grupo1_pergunta_4 = rg1.top_3_dur_mus(nome_arquivo)
     dur_mus_historia(grupo1_pergunta_4, pdf)
     add_texto("\n\n", pdf)
 
-    #Resposta da pergunta 5 grupo 1
+    # Resposta da pergunta 5 grupo 1
     add_texto("Álbuns mais premiados", pdf)
     grupo1_pergunta_5 = rg1.top_3_alb_prem(nome_arquivo)
     acessar_premio(grupo1_pergunta_5, pdf)
@@ -283,7 +291,7 @@ def criar_relatorio_g2():
     """Cria um PDF com a biblioteca FPDF para responder as perguntas do grupo 1, 
     puxando as funções acima para imprimir no PDF corretamente e utilizando as 
     funções do documento "respostas_grupo_2.py."(rg2) para puxar as informações.
-    """ 
+    """
 
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     pdf = FPDF("P", "mm", "A4")
@@ -293,37 +301,39 @@ def criar_relatorio_g2():
 
     nome_arquivo = "informacoes_pink_floyd.xlsx"
 
-    #Resposta da pergunta 1 grupo 2
+    # Resposta da pergunta 1 grupo 2
     add_texto("Quais são as palavras mais comuns nos títulos dos Álbuns?", pdf)
     grupo2_pergunta_1 = rg2.top_3_pal_titulos_albuns(nome_arquivo)
     add_cont_palavras(grupo2_pergunta_1, pdf)
     add_texto("\n\n", pdf)
 
-    #Resposta da pergunta 2 grupo 2
+    # Resposta da pergunta 2 grupo 2
     add_texto("Quais são as palavras mais comuns nos títulos das músicas?", pdf)
     grupo2_pergunta_2 = rg2.top_3_pal_titulos_musicas(nome_arquivo)
     add_cont_palavras(grupo2_pergunta_2, pdf)
     add_texto("\n\n", pdf)
 
-    #Resposta da pergunta 3 grupo 2
-    add_texto("Quais são as palavras mais comuns nas letras das músicas, por Álbum?", pdf)
+    # Resposta da pergunta 3 grupo 2
+    add_texto(
+        "Quais são as palavras mais comuns nas letras das músicas, por Álbum?", pdf)
     grupo2_pergunta_3 = rg2.top_3_pal_albuns(nome_arquivo)
     add_cont_palavras_alb(grupo2_pergunta_3, pdf)
     add_texto("\n\n", pdf)
 
-    #Resposta da pergunta 4 grupo 2
-    add_texto("Quais são as palavras mais comuns nas letras das músicas, em toda a discografia?", pdf)
+    # Resposta da pergunta 4 grupo 2
+    add_texto(
+        "Quais são as palavras mais comuns nas letras das músicas, em toda a discografia?", pdf)
     grupo2_pergunta_4 = rg2.top_3_pal_todas_musicas(nome_arquivo)
     add_cont_palavras(grupo2_pergunta_4, pdf)
     add_texto("\n\n", pdf)
 
-    #Resposta da pergunta 5 grupo 2
+    # Resposta da pergunta 5 grupo 2
     add_texto("O título de um álbum é tema recorrente nas letras?", pdf)
     grupo2_pergunta_5 = rg2.tit_alb_recorrente_letras(nome_arquivo)
     add_cont_palavras_alb(grupo2_pergunta_5, pdf)
     add_texto("\n\n", pdf)
 
-    #Resposta da pergunta 6 grupo 2
+    # Resposta da pergunta 6 grupo 2
     add_texto("O título de uma música é tema recorrente nas letras?", pdf)
     grupo2_pergunta_6 = rg2.tit_mus_recorrente_letras(nome_arquivo)
     add_cont_palavras_alb(grupo2_pergunta_6, pdf)
@@ -331,6 +341,35 @@ def criar_relatorio_g2():
 
     pdf.output("arquivos_relatorio/relatorio_g2.pdf")
     return pdf.page_no()
+
+
+def criar_relatorio_g3():
+    """Cria um PDF com a biblioteca FPDF para responder as perguntas do grupo 1, 
+    puxando as funções acima para imprimir no PDF corretamente e utilizando as 
+    funções do documento "respostas_grupo_2.py."(rg2) para puxar as informações.
+    """
+
+    warnings.filterwarnings("ignore", category=DeprecationWarning)
+    pdf = FPDF("P", "mm", "A4")
+    pdf.add_page()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.set_font("helvetica", size=12)
+
+    nome_arquivo = "informacoes_pink_floyd.xlsx"
+
+    grupo3_pergunta1 = "Qual é o número de palavras por música e quantas palavras diferentes têm?"
+    add_texto(grupo3_pergunta1, pdf)
+    pdf.image("arquivos_relatorio/graf_var_letra_mus.png", x=22, w=120)
+    add_texto("\n\n", pdf)
+
+    grupo3_pergunta1 = "Qual é a maior produção de álbum por década"
+    add_texto(grupo3_pergunta1, pdf)
+    pdf.image("arquivos_relatorio/graf_alb_decada.png", x=22, w=120)
+    add_texto("\n\n", pdf)
+
+    pdf.output("arquivos_relatorio/relatorio_g3.pdf")
+    return pdf.page_no()
+
 
 def sumario(n_pag1: int, n_pag2: int):
     """Cria a página de sumário para identificar as páginas que começam cada 
@@ -340,7 +379,7 @@ def sumario(n_pag1: int, n_pag2: int):
     :type n_pag1: int
     :param n_pag2: número de páginas do grupo 2
     :type n_pag2: int
-    """    
+    """
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     pdf = FPDF("P", "mm", "A4")
     pdf.add_page()
@@ -358,7 +397,7 @@ def sumario(n_pag1: int, n_pag2: int):
 def relatorio_final():
     """Função que puxa as funções de criar relatório e sumário para criar um 
     relatório final, que terá todos os pdfs em um usando a biblioteca FPDF.
-    """    
+    """
     merger = PdfFileMerger()
     leitor = PdfFileReader
     n_pag1 = criar_relatorio_g1()
@@ -372,4 +411,6 @@ def relatorio_final():
     merger.append(leitor(open("arquivos_relatorio/relatorio_g2.pdf", 'rb')))
     merger.write("arquivos_relatorio/relatoriofinal.pdf")
 
+
 relatorio_final()
+criar_relatorio_g3()
