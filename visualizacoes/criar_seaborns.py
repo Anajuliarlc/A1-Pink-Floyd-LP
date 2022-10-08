@@ -60,8 +60,54 @@ def graf_top_3_vis_mus(nome_arquivo: str):
 
     fig.savefig(caminho_graf_menores)
 
+def graf_top_3_dur_mus(nome_arquivo: str):
+    """Gera dois gráficos com as músicas mais duradouras e menos duradouras
 
-print(graf_top_3_vis_mus("../informacoes_pink_floyd.xlsx"))
+    :param nome_arquivo: Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: str
+    """    
+    df_inf_mus = pd.read_excel(nome_arquivo, "informacoes_musicas")
+    nome_col_dur = "Duração"
+    nome_col_mus = "musicas"
+    df_inf_mus_ord = df_inf_mus.sort_values(ascending = False,
+                                             by = nome_col_dur).copy()
+    head_3 = df_inf_mus_ord.copy().head(3)
+    tail_3 = df_inf_mus_ord.copy().tail(3)
+
+    nome_grafico_maiores = "graf_dur_mus_maiores.png"
+    caminho_graf_maiores = "../arquivos_relatorio/" + nome_grafico_maiores
+
+    ax1 = sb.barplot(x = head_3[nome_col_mus],
+                        y = head_3[nome_col_dur],
+                        color = "blue",
+                        )
+    ax1.set_xticklabels(ax1.get_xticklabels(), size = 6)
+
+    ax1.set(xlabel = "Músicas",
+            ylabel = "Minutos",
+            title = "Mais Duradouras")
+
+    fig = ax1.get_figure()
+
+    fig.savefig(caminho_graf_maiores)
+
+    plt.figure()
+
+    nome_grafico_menores = "graf_dur_mus_menores.png"
+    caminho_graf_menores = "../arquivos_relatorio/" + nome_grafico_menores
+
+    ax2 = sb.barplot(x = tail_3[nome_col_mus],
+                        y = tail_3[nome_col_dur],
+                        color = "red")
+
+    ax2.set_xticklabels(ax2.get_xticklabels(), size = 6)
+    
+    ax2.set(xlabel = "Músicas",
+            ylabel = "Segundos",
+            title = "Menos Duradouras")
+    fig = ax2.get_figure()
+
+    fig.savefig(caminho_graf_menores)
 
 def graf_dur_vis(nome_arquivo: str):
     """Gera um gráfico com a relação entre a duração da música
