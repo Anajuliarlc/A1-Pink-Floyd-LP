@@ -10,24 +10,58 @@ from respondendo_perguntas import respostas_grupo_3 as g3
 from respondendo_perguntas import respostas_grupo_2 as g2
 from respondendo_perguntas import respostas_grupo_1 as g1
 
-def graf_vis_mus_alb(nome_arquivo: str):
-    df = g1.dataframe_inf_alb_mus(nome_arquivo,
-                                    "albuns_musicas",
-                                    "informacoes_musicas",
-                                    "albuns",
-                                    "musicas")
-    nome_grafico = "graf_vis_mus_alb.png"
-    caminho_graf = "../arquivos_relatorio/" + nome_grafico
-    ax = sb.scatterplot(x = df["Exibições"],
-                         y = df.index(0),
-                         color = "black")
-    ax.set(xlabel = "Duração (minutos)",
-        ylabel="Exibições (Milhões de Visualizações)")
-    fig = ax.get_figure()
-    fig.savefig(caminho_graf)               
-    return df
+def graf_top_3_vis_mus(nome_arquivo: str):
+    """Gera dois gráficos com as músicas mais vistas e menos vistas
 
-#print(graf_vis_mus_alb("../informacoes_pink_floyd.xlsx"))
+    :param nome_arquivo: Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: str
+    """    
+    dic_df = g1.top_3_vis_mus(nome_arquivo)
+
+    nome_grafico_maiores = "graf_vis_mus_maiores.png"
+    caminho_graf_maiores = "../arquivos_relatorio/" + nome_grafico_maiores
+
+    df_mais_vistas = dic_df["Mais Vistas"]
+
+    df_mais_vistas.reset_index(inplace=True)
+
+    ax1 = sb.barplot(x = df_mais_vistas["index"],
+                        y = df_mais_vistas["Exibições"] / 100000,
+                        color = "blue",
+                        )
+    ax1.set_xticklabels(ax1.get_xticklabels(), size = 6)
+
+    ax1.set(xlabel = "Músicas",
+            ylabel = "Exibições (Milhões de Visualizações)",
+            title = "Mais Visualizadas")
+
+    fig = ax1.get_figure()
+
+    fig.savefig(caminho_graf_maiores)
+
+    
+    nome_grafico_menores = "graf_vis_mus_menores.png"
+    caminho_graf_menores = "../arquivos_relatorio/" + nome_grafico_menores
+
+    df_menos_vistas = dic_df["Menos Vistas"]
+
+    df_menos_vistas.reset_index(inplace=True)
+
+    ax2 = sb.barplot(x = df_menos_vistas["index"],
+                        y = df_menos_vistas["Exibições"],
+                        color = "red")
+    
+    ax2.set_xticklabels(ax2.get_xticklabels(), size = 6)
+    
+    ax2.set(xlabel = "Músicas",
+            ylabel = "Exibições (Visualizações)",
+            title = "Menos Visualizadas")
+    fig = ax2.get_figure()
+
+    fig.savefig(caminho_graf_menores)
+
+
+print(graf_top_3_vis_mus("../informacoes_pink_floyd.xlsx"))
 
 def graf_dur_vis(nome_arquivo: str):
     """Gera um gráfico com a relação entre a duração da música
