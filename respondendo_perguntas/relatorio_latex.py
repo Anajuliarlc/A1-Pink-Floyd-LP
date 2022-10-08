@@ -11,18 +11,24 @@ def add_texto(texto: str, obj_pdf: FPDF):
     :param texto: texto da pergunta
     :type texto: str
     :return: retorna a pergunta no pdf
-    :rtype: PDF
+    :rtype: texto no PDF
+    :param obj_pdf: PDF
+    :type obj_pdf: FPDF
     """
     texto_pdf = obj_pdf.cell(0, 10, texto, ln=1)
     return texto_pdf
 
-def acessar_dataframe(dataframe, obj_pdf):
-    """_summary_
+def acessar_exibicao(dataframe: pd.core.frame.DataFrame, obj_pdf: FPDF):
+    """Função que recebe um dataframe e para cada música, ele pega a exibição. A 
+    função também faz uma mensagem no pdf com o título da música e com o número de 
+    exibições, adicionando-as ao PDF. O tratamento de erro ocorre quando a música 
+    tem um  caractere diferente ao padrão do UTF-8, imprimindo no lugar da música 
+    a mensagem de que não obedece ao padrão.
 
-    :param dataframe: _description_
-    :type dataframe: _type_
-    :param obj_pdf: _description_
-    :type obj_pdf: _type_
+    :param dataframe: Dataframe com as informações das músicas
+    :type dataframe: pd.core.frame.DataFrame
+    :param obj_pdf: PDF
+    :type obj_pdf: FPDF
     """    
     try:
         exibicoes = list(dataframe["Exibições"])
@@ -39,13 +45,18 @@ def acessar_dataframe(dataframe, obj_pdf):
     except:
         add_texto("Essa música não obedece o padrão UTF-8.", obj_pdf)
 
-def acessar_titulo(dicionario, obj_pdf):
-    """_summary_
+def acessar_titulo_exibicao(dicionario: dict, obj_pdf: FPDF):
+    """Função recebe um dicionário e acessa o nome do álbum, imprimindo-o no PDF. 
+    Logo após, ele acessa o título do segundo dicionário e também o imprime. 
+    Por último, a função puxa "acessar_exibicao()" para acessar a chave do segundo
+    dicionário e imprimir no PDF corretamente por álbum.
 
-    :param dicionario: _description_
-    :type dicionario: _type_
-    :param obj_pdf: _description_
-    :type obj_pdf: _type_
+    :param dicionario: dicionário com o álbum como chave e um dicionário como valor.
+                       No segundo dicionário há o titulo do dataframe como chave 
+                       e um dataframe como valor.
+    :type dicionario: dict
+    :param obj_pdf: PDF
+    :type obj_pdf: FPDF
     """    
     for album, dic_exibi in dicionario.items():
         add_texto(album, obj_pdf)
@@ -54,16 +65,20 @@ def acessar_titulo(dicionario, obj_pdf):
             add_texto("\n", obj_pdf)
             add_texto(titulo, obj_pdf)
             add_texto("\n", obj_pdf)
-            acessar_dataframe(dataframe, obj_pdf)
+            acessar_exibicao(dataframe, obj_pdf)
 
 
-def acessar_duracao(dataframe, obj_pdf):
-    """_summary_
+def acessar_duracao(dataframe: pd.core.frame.DataFrame, obj_pdf: FPDF):
+    """Função que recebe um dataframe e para cada música, ele pega a duração. A 
+    função também faz uma mensagem no pdf com o título da música e com o tempo dela,
+    adicionando-as ao PDF. O tratamento de erro ocorre quando a música tem um 
+    caractere diferente ao padrão do UTF-8, imprimindo no lugar da música a 
+    mensagem de que não obedece ao padrão.
 
-    :param dataframe: _description_
-    :type dataframe: _type_
-    :param obj_pdf: _description_
-    :type obj_pdf: _type_
+    :param dataframe: Dataframe com informações da música
+    :type dataframe: : pd.core.frame.DataFrame
+    :param obj_pdf: PDF
+    :type obj_pdf: FPDF
     """    
     duracoes = list(dataframe["Duração"])
     n_musicas = len(duracoes)
@@ -78,16 +93,21 @@ def acessar_duracao(dataframe, obj_pdf):
             add_texto(mensagem, obj_pdf)
             contador += 1
     except:
-        add_texto("Essa música não obedece o padrão UTF-8.", obj_pdf)
+        add_texto("Essa música não obedece o padrão UTF-8.", obj_pdf): FPDF
 
 
-def acessar_titulo_duracao(dicionario, obj_pdf):
-    """_summary_
+def acessar_titulo_duracao(dicionario: dict, obj_pdf: FPDF):
+    """Função recebe um dicionário e acessa o nome do álbum, imprimindo-o no PDF. 
+    Logo após, ele acessa o título do segundo dicionário e também o imprime. 
+    Por último, a função puxa "acessar_duração()" para acessar a chave do segundo
+    dicionário e imprimir no PDF corretamente por álbum.
 
-    :param dicionario: _description_
-    :type dicionario: _type_
-    :param obj_pdf: _description_
-    :type obj_pdf: _type_
+    :param dicionario: dicionário com o álbum como chave e um dicionário como valor.
+                       No segundo dicionário há o titulo do dataframe como chave 
+                       e um dataframe como valor.
+    :type dicionario: dict
+    :param obj_pdf: PDF
+    :type obj_pdf: FPDF
     """    
     for album, dic_dura in dicionario.items():
         add_texto(album, obj_pdf)
@@ -99,29 +119,35 @@ def acessar_titulo_duracao(dicionario, obj_pdf):
             acessar_duracao(dataframe, obj_pdf)
 
 
-def vis_mus_historia(dicionario, obj_pdf):
-    """_summary_
+def vis_mus_historia(dicionario: dict, obj_pdf: FPDF):
+    """Função que acessa o título da música e o seu dataframe, imprimindo o título
+    e puxando a função "acessar_exibição()" para ver o número de visualização das 
+    músicas e imprimir no PDF.
 
-    :param dicionario: _description_
-    :type dicionario: _type_
-    :param obj_pdf: _description_
-    :type obj_pdf: _type_
+    :param dicionario: dicionário com um dataframe das músicas mais vistas
+                       e outro com as menos ouvidas.
+    :type dicionario: dict
+    :param obj_pdf: PDF
+    :type obj_pdf: FPDF
     """    
     for titulo, dataframe in dicionario.items():
         titulo = str(titulo)
         add_texto("\n", obj_pdf)
         add_texto(titulo, obj_pdf)
         add_texto("\n", obj_pdf)
-        acessar_dataframe(dataframe, obj_pdf)
+        acessar_exibicao(dataframe, obj_pdf)
 
 
-def dur_mus_historia(dicionario, obj_pdf):
-    """_summary_
+def dur_mus_historia(dicionario: dict, obj_pdf: FPDF):
+    """Função que acessa o título da música e o seu dataframe, imprimindo o título
+    e puxando a função "acessar_duração()" para ver o tempo das músicas e 
+    imprimir no PDF.
 
-    :param dicionario: _description_
-    :type dicionario: _type_
-    :param obj_pdf: _description_
-    :type obj_pdf: _type_
+    :param dicionario: dicionário com um dataframe das músicas mais duradouras
+                       e outro com as menos duradouras.
+    :type dicionario: dict
+    :param obj_pdf: PDF
+    :type obj_pdf: FPDF
     """    
     for titulo, dataframe in dicionario.items():
         titulo = str(titulo)
@@ -131,13 +157,17 @@ def dur_mus_historia(dicionario, obj_pdf):
         acessar_duracao(dataframe, obj_pdf)
 
 
-def acessar_premio(dataframe, obj_pdf):
-    """_summary_
+def acessar_premio(dataframe: pd.core.frame.DataFrame, obj_pdf: FPDF):
+    """Função que recebe um dataframe e para cada album, ele pega a premição. A 
+    função também faz uma mensagem no pdf com o título do álbum e prêmios que ganhou,
+    adicionando-as ao PDF. O tratamento de erro ocorre quando o álbum tem um 
+    caractere diferente ao padrão do UTF-8, imprimindo no lugar do álbum a 
+    mensagem de que não obedece ao padrão.
 
-    :param dataframe: _description_
-    :type dataframe: _type_
-    :param obj_pdf: _description_
-    :type obj_pdf: _type_
+    :param dataframe: Dataframe com os álbuns mais premiados e suas premiações
+    :type dataframe: : pd.core.frame.DataFrame
+    :param obj_pdf: PDF
+    :type obj_pdf: FPDF
     """    
     premios = list(dataframe["premiacoes"])
     albuns = list(dataframe["album"])
@@ -151,7 +181,6 @@ def acessar_premio(dataframe, obj_pdf):
             premio = str(premio)
             mensagem = "Álbum: " + album
             mensagem2 = "Premiações: " + premio
-            #mensagem3 = mensagem + mensagem2
             add_texto(mensagem, obj_pdf)
             add_texto(mensagem2, obj_pdf)
             contador += 1
@@ -168,6 +197,8 @@ def add_cont_palavras(dataframe: pd.core.frame.DataFrame, obj_pdf: FPDF):
 
     :param dataframe: dataframe da pergunta
     :type dataframe: pd.core.frame.DataFrame
+    :param obj_pdf: PDF
+    :type obj_pdf: FPDF
     """
     for indice in dataframe.index:
         linha = dataframe.iloc[indice]
@@ -187,6 +218,8 @@ def add_cont_palavras_alb(dicionario: dict, obj_pdf: FPDF):
 
     :param dicionario: dicionario com titulo como chave e dataframe como valor.
     :type dicionario: dict
+    :param obj_pdf: PDF
+    :type obj_pdf: FPDF
     """
     for titulo, dataframe in dicionario.items():
         try:
@@ -199,8 +232,11 @@ def add_cont_palavras_alb(dicionario: dict, obj_pdf: FPDF):
 
 
 def criar_relatorio_g1():
-    """_summary_
-    """    
+    """Cria um PDF com a biblioteca FPDF para responder as perguntas do grupo 1, 
+    puxando as funções acima para imprimir no PDF corretamente e utilizando as 
+    funções do documento "respostas_grupo_1.py."(rg1) para puxar as informações.
+    """
+
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     pdf = FPDF("P", "mm", "A4")
     pdf.add_page()
@@ -209,26 +245,31 @@ def criar_relatorio_g1():
 
     nome_arquivo = "informacoes_pink_floyd.xlsx"
 
+    #Resposta da pergunta 1 grupo 1
     add_texto("Músicas mais ouvidas e músicas menos ouvidas por Álbum", pdf)
     grupo1_pergunta_1 = rg1.top_3_vis_mus_alb(nome_arquivo)
-    acessar_titulo(grupo1_pergunta_1, pdf)
+    acessar_titulo_exibicao(grupo1_pergunta_1, pdf)
     add_texto("\n\n", pdf)
 
+    #Resposta da pergunta 2 grupo 1
     add_texto("Músicas mais longas e músicas mais curtas por Álbum", pdf)
     grupo1_pergunta_2 = rg1.top_3_dur_mus_alb(nome_arquivo)
     acessar_titulo_duracao(grupo1_pergunta_2, pdf)
     add_texto("\n\n", pdf)
 
+    #Resposta da pergunta 3 grupo 1
     add_texto("Músicas mais ouvidas e músicas menos ouvidas [em toda a história da banda]", pdf)
     grupo1_pergunta_3 = rg1.top_3_vis_mus(nome_arquivo)
     vis_mus_historia(grupo1_pergunta_3, pdf)
     add_texto("\n\n", pdf)
 
+    #Resposta da pergunta 4 grupo 1
     add_texto("Músicas mais longas e músicas mais curtas [em toda a história da banda]", pdf)
     grupo1_pergunta_4 = rg1.top_3_dur_mus(nome_arquivo)
     dur_mus_historia(grupo1_pergunta_4, pdf)
     add_texto("\n\n", pdf)
 
+    #Resposta da pergunta 5 grupo 1
     add_texto("Álbuns mais premiados", pdf)
     grupo1_pergunta_5 = rg1.top_3_alb_prem(nome_arquivo)
     acessar_premio(grupo1_pergunta_5, pdf)
@@ -239,8 +280,11 @@ def criar_relatorio_g1():
 
 
 def criar_relatorio_g2():
-    """_summary_
-    """    
+    """Cria um PDF com a biblioteca FPDF para responder as perguntas do grupo 1, 
+    puxando as funções acima para imprimir no PDF corretamente e utilizando as 
+    funções do documento "respostas_grupo_2.py."(rg2) para puxar as informações.
+    """ 
+
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     pdf = FPDF("P", "mm", "A4")
     pdf.add_page()
@@ -249,31 +293,37 @@ def criar_relatorio_g2():
 
     nome_arquivo = "informacoes_pink_floyd.xlsx"
 
+    #Resposta da pergunta 1 grupo 2
     add_texto("Quais são as palavras mais comuns nos títulos dos Álbuns?", pdf)
     grupo2_pergunta_1 = rg2.top_3_pal_titulos_albuns(nome_arquivo)
     add_cont_palavras(grupo2_pergunta_1, pdf)
     add_texto("\n\n", pdf)
 
+    #Resposta da pergunta 2 grupo 2
     add_texto("Quais são as palavras mais comuns nos títulos das músicas?", pdf)
     grupo2_pergunta_2 = rg2.top_3_pal_titulos_musicas(nome_arquivo)
     add_cont_palavras(grupo2_pergunta_2, pdf)
     add_texto("\n\n", pdf)
 
+    #Resposta da pergunta 3 grupo 2
     add_texto("Quais são as palavras mais comuns nas letras das músicas, por Álbum?", pdf)
     grupo2_pergunta_3 = rg2.top_3_pal_albuns(nome_arquivo)
     add_cont_palavras_alb(grupo2_pergunta_3, pdf)
     add_texto("\n\n", pdf)
 
+    #Resposta da pergunta 4 grupo 2
     add_texto("Quais são as palavras mais comuns nas letras das músicas, em toda a discografia?", pdf)
     grupo2_pergunta_4 = rg2.top_3_pal_todas_musicas(nome_arquivo)
     add_cont_palavras(grupo2_pergunta_4, pdf)
     add_texto("\n\n", pdf)
 
+    #Resposta da pergunta 5 grupo 2
     add_texto("O título de um álbum é tema recorrente nas letras?", pdf)
     grupo2_pergunta_5 = rg2.tit_alb_recorrente_letras(nome_arquivo)
     add_cont_palavras_alb(grupo2_pergunta_5, pdf)
     add_texto("\n\n", pdf)
 
+    #Resposta da pergunta 6 grupo 2
     add_texto("O título de uma música é tema recorrente nas letras?", pdf)
     grupo2_pergunta_6 = rg2.tit_mus_recorrente_letras(nome_arquivo)
     add_cont_palavras_alb(grupo2_pergunta_6, pdf)
@@ -282,8 +332,14 @@ def criar_relatorio_g2():
     pdf.output("arquivos_relatorio/relatorio_g2.pdf")
     return pdf.page_no()
 
-def sumario(n_pag1, n_pag2):
-    """_summary_
+def sumario(n_pag1: int, n_pag2: int):
+    """Cria a página de sumário para identificar as páginas que começam cada 
+    pergunta, recebendo as páginas pelas funções de relatório por grupo.
+
+    :param n_pag1: número de páginas do grupo 1
+    :type n_pag1: int
+    :param n_pag2: número de páginas do grupo 2
+    :type n_pag2: int
     """    
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     pdf = FPDF("P", "mm", "A4")
@@ -300,7 +356,8 @@ def sumario(n_pag1, n_pag2):
 
 
 def relatorio_final():
-    """_summary_
+    """Função que puxa as funções de criar relatório e sumário para criar um 
+    relatório final, que terá todos os pdfs em um usando a biblioteca FPDF.
     """    
     merger = PdfFileMerger()
     leitor = PdfFileReader
