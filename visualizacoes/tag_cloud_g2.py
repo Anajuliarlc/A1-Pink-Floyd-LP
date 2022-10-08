@@ -49,7 +49,7 @@ def tag_cloud_1():
     word_cloud2.to_file("./arquivos_relatorio/tag_1.png")
 
 def tag_cloud_2():
-    """Função que faz a tag cloud da pergunta "uais são as palavras mais comuns 
+    """Função que faz a tag cloud da pergunta "Quais são as palavras mais comuns 
     nos títulos das músicas?". Usa a função "acessar_info" para entrar no excel 
     e retornar um texto. A função mascara a imagem para depois pegar o texto, 
     aplicar as tag clouds e gerar a imagem.
