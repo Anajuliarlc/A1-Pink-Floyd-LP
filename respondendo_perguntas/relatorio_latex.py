@@ -4,6 +4,7 @@ from PyPDF2 import PdfFileMerger, PdfFileReader
 from fpdf import FPDF
 import respostas_grupo_1 as rg1
 import respostas_grupo_2 as rg2
+import respostas_grupo_3 as rg3
 import sys
 
 sys.path.insert(0, "./")
@@ -236,6 +237,51 @@ def add_cont_palavras_alb(dicionario: dict, obj_pdf: FPDF):
         except:
             add_texto("Essa música não obedece o padrão UTF-8.", obj_pdf)
 
+def acessar_vendas(dataframe: pd.core.frame.DataFrame, obj_pdf: FPDF):
+    """Função que recebe um dataframe e para cada álbum, ele pega a venda. A 
+    função também faz uma mensagem no pdf com o título do álbum e com o tempo dela,
+    adicionando-as ao PDF. O tratamento de erro ocorre quando o álbum tem um 
+    caractere diferente ao padrão do UTF-8, imprimindo no lugar da música a 
+    mensagem de que não obedece ao padrão.
+
+    :param dataframe: Dataframe com informações da música
+    :type dataframe: : pd.core.frame.DataFrame
+    :param obj_pdf: PDF
+    :type obj_pdf: FPDF
+    """
+    vendas = list(dataframe["vendas"])
+    album = len(vendas)
+    contador = 0
+    try:
+        while contador < album:
+            musica = list(dataframe.index)
+            venda = vendas[contador]
+            albuns = str(musica[contador])
+            venda = str(venda)
+            mensagem = "   Álbum: " + albuns + "     vendas: " + venda
+            add_texto(mensagem, obj_pdf)
+            contador += 1
+    except:
+        add_texto("Essa música não obedece o padrão UTF-8.", obj_pdf)
+
+
+def acessar_vendas_album(dicionario: dict, obj_pdf: FPDF):
+    """Função recebe um dicionário e acessa a chave, imprimindo-o no PDF. 
+    Logo após, ele acessa o valor que é um dataframe, puxando a função 
+    "acessar_vendas" para imprimir o dataframe no pdf.
+
+    :param dicionario: dicionário com a chave de mais e menos vendidos e um dataframe
+                        como valor.
+    :type dicionario: dict
+    :param obj_pdf: PDF
+    :type obj_pdf: FPDF
+    """
+    for mais_menos, dataframe in dicionario.items():
+        mais_menos = str(mais_menos)
+        add_texto("\n", obj_pdf)
+        add_texto(mais_menos, obj_pdf)
+        add_texto("\n", obj_pdf)
+        acessar_vendas(dataframe, obj_pdf)
 
 def criar_relatorio_g1():
     """Cria um PDF com a biblioteca FPDF para responder as perguntas do grupo 1, 
@@ -251,6 +297,7 @@ def criar_relatorio_g1():
 
     nome_arquivo = "informacoes_pink_floyd.xlsx"
 
+    add_texto("Grupo 1", pdf)
     # Resposta da pergunta 1 grupo 1
     add_texto("Músicas mais ouvidas e músicas menos ouvidas por Álbum", pdf)
     grupo1_pergunta_1 = rg1.top_3_vis_mus_alb(nome_arquivo)
@@ -281,7 +328,6 @@ def criar_relatorio_g1():
     add_texto("Álbuns mais premiados", pdf)
     grupo1_pergunta_5 = rg1.top_3_alb_prem(nome_arquivo)
     acessar_premio(grupo1_pergunta_5, pdf)
-    add_texto("\n\n", pdf)
 
     pdf.output("arquivos_relatorio/relatorio_g1.pdf")
     return pdf.page_no()
@@ -301,28 +347,33 @@ def criar_relatorio_g2():
 
     nome_arquivo = "informacoes_pink_floyd.xlsx"
 
+    add_texto("Grupo 2", pdf)
     # Resposta da pergunta 1 grupo 2
     add_texto("Quais são as palavras mais comuns nos títulos dos Álbuns?", pdf)
+    pdf.image("arquivos_relatorio/tag_1.png", x=22, w=120)
+    add_texto("Capa: The dark side of the moon", pdf)
     grupo2_pergunta_1 = rg2.top_3_pal_titulos_albuns(nome_arquivo)
     add_cont_palavras(grupo2_pergunta_1, pdf)
     add_texto("\n\n", pdf)
 
     # Resposta da pergunta 2 grupo 2
     add_texto("Quais são as palavras mais comuns nos títulos das músicas?", pdf)
+    pdf.image("arquivos_relatorio/tag_2.png", x=22, w=120)
+    add_texto("Capa: The division bell", pdf)
     grupo2_pergunta_2 = rg2.top_3_pal_titulos_musicas(nome_arquivo)
     add_cont_palavras(grupo2_pergunta_2, pdf)
     add_texto("\n\n", pdf)
 
     # Resposta da pergunta 3 grupo 2
-    add_texto(
-        "Quais são as palavras mais comuns nas letras das músicas, por Álbum?", pdf)
+    add_texto("Quais são as palavras mais comuns nas letras das músicas, por Álbum?", pdf)
     grupo2_pergunta_3 = rg2.top_3_pal_albuns(nome_arquivo)
     add_cont_palavras_alb(grupo2_pergunta_3, pdf)
     add_texto("\n\n", pdf)
 
     # Resposta da pergunta 4 grupo 2
-    add_texto(
-        "Quais são as palavras mais comuns nas letras das músicas, em toda a discografia?", pdf)
+    add_texto("Quais são as palavras mais comuns nas letras das músicas, em toda a discografia?", pdf)
+    pdf.image("arquivos_relatorio/tag_3.png", x=22, w=120)
+    add_texto("Capa: Pulse", pdf)
     grupo2_pergunta_4 = rg2.top_3_pal_todas_musicas(nome_arquivo)
     add_cont_palavras(grupo2_pergunta_4, pdf)
     add_texto("\n\n", pdf)
@@ -337,7 +388,6 @@ def criar_relatorio_g2():
     add_texto("O título de uma música é tema recorrente nas letras?", pdf)
     grupo2_pergunta_6 = rg2.tit_mus_recorrente_letras(nome_arquivo)
     add_cont_palavras_alb(grupo2_pergunta_6, pdf)
-    add_texto("\n\n", pdf)
 
     pdf.output("arquivos_relatorio/relatorio_g2.pdf")
     return pdf.page_no()
@@ -346,7 +396,7 @@ def criar_relatorio_g2():
 def criar_relatorio_g3():
     """Cria um PDF com a biblioteca FPDF para responder as perguntas do grupo 1, 
     puxando as funções acima para imprimir no PDF corretamente e utilizando as 
-    funções do documento "respostas_grupo_2.py."(rg2) para puxar as informações.
+    funções do documento "respostas_grupo_3.py."(rg3) para puxar as informações.
     """
 
     warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -356,15 +406,24 @@ def criar_relatorio_g3():
     pdf.set_font("helvetica", size=12)
 
     nome_arquivo = "informacoes_pink_floyd.xlsx"
+    
+    add_texto("Grupo 3", pdf)
+    # Resposta da pergunta 1 grupo 3
+    grupo3_pergunta2 = "Qual é a maior produção de álbum por década?"
+    add_texto(grupo3_pergunta2, pdf)
+    pdf.image("arquivos_relatorio/graf_alb_decada.png", x=22, w=120)
+    add_texto("\n\n", pdf)
 
+    # Resposta da pergunta 2 grupo 3
     grupo3_pergunta1 = "Qual é o número de palavras por música e quantas palavras diferentes têm?"
     add_texto(grupo3_pergunta1, pdf)
     pdf.image("arquivos_relatorio/graf_var_letra_mus.png", x=22, w=120)
     add_texto("\n\n", pdf)
 
-    grupo3_pergunta1 = "Qual é a maior produção de álbum por década"
-    add_texto(grupo3_pergunta1, pdf)
-    pdf.image("arquivos_relatorio/graf_alb_decada.png", x=22, w=120)
+    # Resposta da pergunta 3 grupo 3
+    grupo3_pergunta3 = rg3.top_5_vendas_album(nome_arquivo)
+    add_texto("Quais são os álbuns mais vendidos?", pdf)
+    acessar_vendas_album(grupo3_pergunta3, pdf)
     add_texto("\n\n", pdf)
 
     pdf.output("arquivos_relatorio/relatorio_g3.pdf")
@@ -390,6 +449,7 @@ def sumario(n_pag1: int, n_pag2: int):
     add_texto("\n\n", pdf)
     add_texto("Grupo de perguntas 1: página 3", pdf)
     add_texto(f"Grupo de perguntas 2: página {n_pag1}", pdf)
+    add_texto(f"Grupo de perguntas 3: página {n_pag2}", pdf)
 
     pdf.output("arquivos_relatorio/sumario.pdf")
 
@@ -401,16 +461,16 @@ def relatorio_final():
     merger = PdfFileMerger()
     leitor = PdfFileReader
     n_pag1 = criar_relatorio_g1()
-    n_pag1 = str(n_pag1 + 1)
+    n_pag1 = str(n_pag1 + 3)
     n_pag2 = criar_relatorio_g2()
-    n_pag2 = str(n_pag2)
+    n_pag2 = str(n_pag2 + 37)
     sumario(n_pag1, n_pag2)
     merger.append(leitor(open("arquivos_relatorio/capa_a1_LP.pdf", 'rb')))
     merger.append(leitor(open("arquivos_relatorio/sumario.pdf", 'rb')))
     merger.append(leitor(open("arquivos_relatorio/relatorio_g1.pdf", "rb")))
     merger.append(leitor(open("arquivos_relatorio/relatorio_g2.pdf", 'rb')))
+    merger.append(leitor(open("arquivos_relatorio/relatorio_g3.pdf", 'rb')))
     merger.write("arquivos_relatorio/relatoriofinal.pdf")
 
 
 relatorio_final()
-criar_relatorio_g3()
