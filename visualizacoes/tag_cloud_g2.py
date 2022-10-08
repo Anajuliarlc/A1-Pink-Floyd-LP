@@ -1,43 +1,97 @@
-from wordcloud import WordCloud
-import pandas as pd
-import matplotlib.pyplot as plt
+import wordcloud as wd
 import numpy as np
-import os
+import pandas as pd
 from os import path
-import re
-
-
-#Quais são as palavras mais comuns nos títulos dos Álbuns?
+from PIL import Image
+import matplotlib.pyplot as plt
 
 nome_arquivo = "informacoes_pink_floyd.xlsx"
 
-def pergunta_1(nome_arquivo, nome_folha, nome_coluna):
-    titulos = pd.read_excel(nome_arquivo, nome_folha)
-    titulos_concat = str()
-    for titulo in titulos[nome_coluna]:
-        soma = " " + titulo
-        titulos_concat += soma
-    return titulos_concat
+def acessar_info(nome_arquivo: str, nome_folha: str, nome_coluna: str):
+    """A função acessa o arquivo excel, a folha da informação pedida e a coluna
+    para depois transformar em str e ir concatenando, colocando um espaço entre 
+    as palavras e por fim retornando o texto final.
 
+    :param nome_arquivo: Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: str
+    :param nome_folha:  Nome da folha do excel
+    :type nome_folha: str
+    :param nome_coluna:  Nome da coluna do excel
+    :type nome_coluna: str
+    :return: texto das informações pedidas
+    :rtype: str
+    """      
+    informacao = pd.read_excel(nome_arquivo, nome_folha)
+    informacao_concat = str()
+    for informacao in informacao[nome_coluna]:
+        soma = " " + informacao
+        informacao_concat += soma
+    return informacao_concat
 
-def tag_1(texto):
-    wc = WordCloud(
+def tag_cloud_1():
+    """Função que faz a tag cloud da pergunta "Quais são as palavras mais comuns
+    nos títulos dos Álbuns?". Usa a função "acessar_info" para entrar no excel e 
+    retornar um texto. A função mascara a imagem para depois pegar o texto, 
+    aplicar as tag clouds e gerar a imagem.
+    """    
+    texto = acessar_info(nome_arquivo, "albuns", "albuns")
+    mask = np.array(Image.open("arquivos_relatorio/dark_side_of_the_moon.jpg"))
+    word_cloud2 = wd.WordCloud(
+        width=3000,
+        height=2000,
+        random_state=123,
         background_color="black",
-        height= 600,
-        width= 400
-    )
-    wc.generate(texto)
-    wc.to_file("tag_1.png")
-    
-pergunta_1(nome_arquivo, "albuns", "albuns")
-#tag_1(pergunta_1(nome_arquivo, "albuns", "albuns"))
+        colormap="prism",
+        collocations=False,
+        stopwords=wd.STOPWORDS,
+        mask=mask).generate(texto)
 
-from PIL import Image
+    word_cloud2.to_file("./arquivos_relatorio/tag_1.png")
 
-def tag_1pf(texto):
-    mask = np.array(Image.open("./arquivos_relatorio/pf_darksidemod.png"))
-    mask_wc = WordCloud(background_color="black", max_words=2000, mask = mask, contour_width=3, contour_color='steelblue')
-    mask_wc.generate(texto)
-    mask_wc.to_file("./arquivos_relatorio/tag_1m.png")
+def tag_cloud_2():
+    """Função que faz a tag cloud da pergunta "uais são as palavras mais comuns 
+    nos títulos das músicas?". Usa a função "acessar_info" para entrar no excel 
+    e retornar um texto. A função mascara a imagem para depois pegar o texto, 
+    aplicar as tag clouds e gerar a imagem.
+    """ 
+    texto = acessar_info(nome_arquivo, "musicas", "musicas")
+    mask = np.array(Image.open("arquivos_relatorio/pulse.jpg"))
+    word_cloud2 = wd.WordCloud(
+        width=3000,
+        height=2000,
+        random_state=123,
+        background_color="black",
+        colormap="cividis",
+        collocations=False,
+        stopwords=wd.STOPWORDS,
+        mask=mask).generate(texto)
 
-tag_1pf(pergunta_1(nome_arquivo, "albuns", "albuns"))
+    word_cloud2.to_file("./arquivos_relatorio/tag_2.png")
+
+def tag_cloud_3():
+    """Função que faz a tag cloud da pergunta "Quais são as palavras mais comuns 
+    nas letras das músicas, em toda a discografia?". Usa a função "acessar_info" 
+    para entrar no excel e retornar um texto. A função mascara a imagem para 
+    depois pegar o texto, aplicar as tag clouds e gerar a imagem.
+    """  
+    texto = acessar_info(nome_arquivo, "informacoes_musicas", "Letra")
+    mask = np.array(Image.open("arquivos_relatorio/the_division_bell.jpg"))
+    word_cloud2 = wd.WordCloud(
+        width=3000,
+        height=2000,
+        random_state=123,
+        background_color="black",
+        colormap="ocean_r",
+        collocations=False,
+        stopwords=wd.STOPWORDS,
+        mask=mask).generate(texto)
+
+    word_cloud2.to_file("./arquivos_relatorio/tag_3.png")
+
+
+"""Obs: As 3 funções acima são práticamente iguais, a diferença delas está nos 
+arquivos e nas configurações de cada wordcloud.
+"""
+tag_cloud_1()
+tag_cloud_2()
+tag_cloud_3()
