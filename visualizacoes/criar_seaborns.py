@@ -1,7 +1,7 @@
-#As função deverão ser rodados somente na pasta principal
+#As funções deverão ser rodadas somente na pasta principal
 import sys
 
-sys.path.insert(0, "./")
+sys.path.insert(0, "../")
 
 import pandas as pd
 import matplotlib.pyplot as plt

@@ -1,13 +1,16 @@
+#As funções deverão ser rodadas somente na pasta principal
 import pandas as pd
 import warnings
 from PyPDF2 import PdfFileMerger, PdfFileReader
 from fpdf import FPDF
+
+import sys
+
+sys.path.insert(0, "./respondendo_perguntas/")
+
 import respostas_grupo_1 as rg1
 import respostas_grupo_2 as rg2
 import respostas_grupo_3 as rg3
-import sys
-
-sys.path.insert(0, "./")
 
 
 def add_texto(texto: str, obj_pdf: FPDF):
@@ -480,7 +483,4 @@ def relatorio_final():
     merger.append(leitor(open("arquivos_relatorio/relatorio_g1.pdf", "rb")))
     merger.append(leitor(open("arquivos_relatorio/relatorio_g2.pdf", 'rb')))
     merger.append(leitor(open("arquivos_relatorio/relatorio_g3.pdf", 'rb')))
-    merger.write("arquivos_relatorio/relatoriofinal.pdf")
-
-
-relatorio_final()
+    merger.write("./relatoriofinal.pdf")

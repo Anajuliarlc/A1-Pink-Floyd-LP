@@ -1,4 +1,9 @@
-import funcoes_web_scraping as fws
+#As funções deverão ser rodadas somente na pasta principal
+import sys
+
+sys.path.insert(0, "../")
+
+from adquirindo_dados import funcoes_web_scraping as fws
 import pandas as pd
 import openpyxl as op
 
@@ -12,7 +17,7 @@ def criar_arquivo_albuns_musicas():
     for tupla in tuplas_album_musica:
         lista_album_musica = list(tupla)
         folha.append(lista_album_musica)
-    planilha.save("albuns_musicas.xlsx")
+    planilha.save("adquirindo_dados/albuns_musicas.xlsx")
 
 def criar_arquivo_premiacoes():
     """
@@ -21,7 +26,7 @@ def criar_arquivo_premiacoes():
     dataframe_premios = fws.df_index_album()
     dataframe_premios.reset_index(inplace = True)
     dataframe_premios.rename(columns = {"index": "album"}, inplace = True)
-    dataframe_premios.to_csv("premiacoes.csv", index = False)
+    dataframe_premios.to_csv("adquirindo_dados/premiacoes.csv", index = False)
 
 def criar_arquivo_informacoes_musicas():
     """
@@ -30,7 +35,7 @@ def criar_arquivo_informacoes_musicas():
     dataframe_musicas = fws.df_index_musica()
     dataframe_musicas.reset_index(inplace = True)
     dataframe_musicas.rename(columns = {"index": "musicas"}, inplace = True)
-    dataframe_musicas.to_csv("informacoes_musicas.csv", index = False)
+    dataframe_musicas.to_csv("adquirindo_dados/informacoes_musicas.csv", index = False)
 
 def criar_arquivo_vendas():
     """
@@ -38,12 +43,21 @@ def criar_arquivo_vendas():
     """
     dataframe_vendas = fws.dataframe_sales()
     dataframe_vendas.rename(columns = {"index": "album"}, inplace = True)
-    dataframe_vendas.to_csv("vendas.csv", index = False)
+    dataframe_vendas.to_csv("adquirindo_dados/vendas.csv", index = False)
 
-criar_arquivo_albuns_musicas()
-criar_arquivo_premiacoes()
-criar_arquivo_informacoes_musicas()
-criar_arquivo_vendas()
+def criar_arquivos():
+    """Gera os arquivos para a criação do banco de dados
+    """    
+    try:
+        criar_arquivo_albuns_musicas()
+        criar_arquivo_premiacoes()
+        criar_arquivo_informacoes_musicas()
+        criar_arquivo_vendas()
+    except:
+        print("""
+        Houve uma queda de internet
+        ou do site onde os dados estão hospedados
+        """)
 
 """
 Os arquivos foram unidos em somente um excel,
