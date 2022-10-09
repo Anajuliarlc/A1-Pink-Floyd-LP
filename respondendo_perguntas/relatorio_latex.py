@@ -311,15 +311,17 @@ def criar_relatorio_g1():
     add_texto("\n\n", pdf)
 
     # Resposta da pergunta 3 grupo 1
-    add_texto(
-        "Músicas mais ouvidas e músicas menos ouvidas [em toda a história da banda]", pdf)
+    add_texto("Músicas mais ouvidas e músicas menos ouvidas [em toda a história da banda]", pdf)
+    pdf.image("arquivos_relatorio/graf_vis_mus_maiores.png", x=22, w=120)
+    pdf.image("arquivos_relatorio/graf_vis_mus_menores.png", x=22, w=120) 
     grupo1_pergunta_3 = rg1.top_3_vis_mus(nome_arquivo)
     vis_mus_historia(grupo1_pergunta_3, pdf)
     add_texto("\n\n", pdf)
 
     # Resposta da pergunta 4 grupo 1
-    add_texto(
-        "Músicas mais longas e músicas mais curtas [em toda a história da banda]", pdf)
+    add_texto("Músicas mais longas e músicas mais curtas [em toda a história da banda]", pdf)
+    pdf.image("arquivos_relatorio/graf_dur_mus_maiores.png", x=22, w=120)
+    pdf.image("arquivos_relatorio/graf_dur_mus_menores.png", x=22, w=120) 
     grupo1_pergunta_4 = rg1.top_3_dur_mus(nome_arquivo)
     dur_mus_historia(grupo1_pergunta_4, pdf)
     add_texto("\n\n", pdf)
@@ -328,6 +330,13 @@ def criar_relatorio_g1():
     add_texto("Álbuns mais premiados", pdf)
     grupo1_pergunta_5 = rg1.top_3_alb_prem(nome_arquivo)
     acessar_premio(grupo1_pergunta_5, pdf)
+    add_texto("\n\n", pdf)
+
+    # Resposta da pergunta 6 grupo 1
+    grupo1_pergunta_6 = "Existe alguma relação entre a duração da música e sua popularidade?"
+    add_texto(grupo1_pergunta_6, pdf)
+    pdf.image("arquivos_relatorio/graf_dur_vis.png", x=22, w=120)
+    add_texto("Como visto no gráfico, percebe-se que não há ligação entre sua duração e sua popularidade.", pdf)
 
     pdf.output("arquivos_relatorio/relatorio_g1.pdf")
     return pdf.page_no()
@@ -409,9 +418,10 @@ def criar_relatorio_g3():
     
     add_texto("Grupo 3", pdf)
     # Resposta da pergunta 1 grupo 3
-    grupo3_pergunta2 = "Qual é a maior produção de álbum por década?"
+    grupo3_pergunta2 = "Qual década teve a maior produção de álbum?"
     add_texto(grupo3_pergunta2, pdf)
     pdf.image("arquivos_relatorio/graf_alb_decada.png", x=22, w=120)
+    add_texto("Como visto no gráfico, a década de 1970 foi a que teve mais produção do Pink Floyd", pdf)
     add_texto("\n\n", pdf)
 
     # Resposta da pergunta 2 grupo 3
@@ -463,7 +473,7 @@ def relatorio_final():
     n_pag1 = criar_relatorio_g1()
     n_pag1 = str(n_pag1 + 3)
     n_pag2 = criar_relatorio_g2()
-    n_pag2 = str(n_pag2 + 37)
+    n_pag2 = str(n_pag2 + 40)
     sumario(n_pag1, n_pag2)
     merger.append(leitor(open("arquivos_relatorio/capa_a1_LP.pdf", 'rb')))
     merger.append(leitor(open("arquivos_relatorio/sumario.pdf", 'rb')))
