@@ -1,6 +1,8 @@
 # A1-Pink-Floyd-LP
 Trabalho de Linguagem de Programação - A1
 
+Este projeto analisa o histórico da banda Pink Floyd gerando um relatório sobre a mesma de acordo com as perguntas pedidas pelo trabalho.
+O relatório já está gerado, mas se houver necessidade de atualização, siga os passos do main.
 Para rodar o programa, será necessário que dê "pip install -r requirements.txt"
 Dentro deste txt há todos as bibliotecas que foram utilizadas juntamente com a versão.
 
