@@ -1,25 +1,27 @@
+#As função deverão ser rodados somente na pasta principal
+import sys
+
+sys.path.insert(0, "./")
+
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sb
 
-import sys
-
-sys.path.insert(0, "../")
-
 from respondendo_perguntas import respostas_grupo_3 as g3
-from respondendo_perguntas import respostas_grupo_2 as g2
 from respondendo_perguntas import respostas_grupo_1 as g1
 
-def graf_top_3_vis_mus(nome_arquivo: str):
+def graf_top_3_vis_mus(nome_arquivo: str, caminho_graficos: str):
     """Gera dois gráficos com as músicas mais vistas e menos vistas
 
     :param nome_arquivo: Nome do arquivo onde os dados estão contidos
     :type nome_arquivo: str
+    :param caminho_graficos: Nome do caminho para arquivar os gráficos
+    :type caminho_graficos: str
     """    
     dic_df = g1.top_3_vis_mus(nome_arquivo)
 
     nome_grafico_maiores = "graf_vis_mus_maiores.png"
-    caminho_graf_maiores = "../arquivos_relatorio/" + nome_grafico_maiores
+    caminho_graf_maiores = caminho_graficos + nome_grafico_maiores
 
     df_mais_vistas = dic_df["Mais Vistas"]
 
@@ -39,9 +41,11 @@ def graf_top_3_vis_mus(nome_arquivo: str):
 
     fig.savefig(caminho_graf_maiores)
 
-    
+    #Reinicia a geração de gráficos
+    plt.figure()
+
     nome_grafico_menores = "graf_vis_mus_menores.png"
-    caminho_graf_menores = "../arquivos_relatorio/" + nome_grafico_menores
+    caminho_graf_menores = caminho_graficos + nome_grafico_menores
 
     df_menos_vistas = dic_df["Menos Vistas"]
 
@@ -60,11 +64,16 @@ def graf_top_3_vis_mus(nome_arquivo: str):
 
     fig.savefig(caminho_graf_menores)
 
-def graf_top_3_dur_mus(nome_arquivo: str):
+    #Reinicia a geração de gráficos
+    plt.figure()
+
+def graf_top_3_dur_mus(nome_arquivo: str, caminho_graficos: str):
     """Gera dois gráficos com as músicas mais duradouras e menos duradouras
 
     :param nome_arquivo: Nome do arquivo onde os dados estão contidos
     :type nome_arquivo: str
+    :param caminho_graficos: Nome do caminho para arquivar os gráficos
+    :type caminho_graficos: str
     """    
     df_inf_mus = pd.read_excel(nome_arquivo, "informacoes_musicas")
     nome_col_dur = "Duração"
@@ -75,7 +84,7 @@ def graf_top_3_dur_mus(nome_arquivo: str):
     tail_3 = df_inf_mus_ord.copy().tail(3)
 
     nome_grafico_maiores = "graf_dur_mus_maiores.png"
-    caminho_graf_maiores = "../arquivos_relatorio/" + nome_grafico_maiores
+    caminho_graf_maiores = caminho_graficos + nome_grafico_maiores
 
     ax1 = sb.barplot(x = head_3[nome_col_mus],
                         y = head_3[nome_col_dur],
@@ -91,10 +100,11 @@ def graf_top_3_dur_mus(nome_arquivo: str):
 
     fig.savefig(caminho_graf_maiores)
 
+    #Reinicia a geração de gráficos
     plt.figure()
 
     nome_grafico_menores = "graf_dur_mus_menores.png"
-    caminho_graf_menores = "../arquivos_relatorio/" + nome_grafico_menores
+    caminho_graf_menores = caminho_graficos + nome_grafico_menores
 
     ax2 = sb.barplot(x = tail_3[nome_col_mus],
                         y = tail_3[nome_col_dur],
@@ -109,17 +119,22 @@ def graf_top_3_dur_mus(nome_arquivo: str):
 
     fig.savefig(caminho_graf_menores)
 
-def graf_dur_vis(nome_arquivo: str):
+    #Reinicia a geração de gráficos
+    plt.figure()
+
+def graf_dur_vis(nome_arquivo: str, caminho_graficos: str):
     """Gera um gráfico com a relação entre a duração da música
         e o número de visualizações
 
     :param nome_arquivo: Nome do arquivo onde os dados estão contidos
     :type nome_arquivo: str
+    :param caminho_graficos: Nome do caminho para arquivar os gráficos
+    :type caminho_graficos: str
     """    
     df = pd.read_excel(nome_arquivo, "informacoes_musicas")
 
     nome_grafico = "graf_dur_vis.png"
-    caminho_graf = "../arquivos_relatorio/" + nome_grafico
+    caminho_graf = caminho_graficos + nome_grafico
 
     df.reset_index(inplace=True)
 
@@ -132,17 +147,22 @@ def graf_dur_vis(nome_arquivo: str):
     fig = ax.get_figure()
     fig.savefig(caminho_graf)
 
+    #Reinicia a geração de gráficos
+    plt.figure()
 
-def graf_var_letra_mus(nome_arquivo: str):
+
+def graf_var_letra_mus(nome_arquivo: str, caminho_graficos: str):
     """Gera um gráfico da relação entre o número de palavras
         e número de palavras diferentes nas músicas
 
     :param nome_arquivo: Nome do arquivo onde os dados estão contidos
     :type nome_arquivo: str
+    :param caminho_graficos: Nome do caminho para arquivar os gráficos
+    :type caminho_graficos: str
     """
     df = g3.var_letra_mus(nome_arquivo)
     nome_grafico = "graf_var_letra_mus.png"
-    caminho_graf = "../arquivos_relatorio/" + nome_grafico
+    caminho_graf = caminho_graficos + nome_grafico
 
     df.reset_index(inplace=True)
 
@@ -175,16 +195,21 @@ def graf_var_letra_mus(nome_arquivo: str):
     fig = ax.get_figure()
     fig.savefig(caminho_graf)
 
-def graf_alb_decada(nome_arquivo: str):
+    #Reinicia a geração de gráficos
+    plt.figure()
+
+def graf_alb_decada(nome_arquivo: str, caminho_graficos: str):
     """Gera um gráfico da relação de álbuns lançados por década
 
     :param nome_arquivo: Nome do arquivo onde os dados estão contidos
     :type nome_arquivo: str
-    """
+    :param caminho_graficos: Nome do caminho para arquivar os gráficos
+    :type caminho_graficos: str
+    """    
     df = g3.albuns_decada(nome_arquivo)
     df.reset_index(inplace = True)
     nome_grafico = "graf_alb_decada.png"
-    caminho_graf = "../arquivos_relatorio/" + nome_grafico
+    caminho_graf = caminho_graficos + nome_grafico
 
     ax = plt.subplots()
     ax = sb.barplot(x = df["index"],
@@ -204,3 +229,21 @@ def graf_alb_decada(nome_arquivo: str):
 
     fig = ax.get_figure()
     fig.savefig(caminho_graf)
+
+    #Reinicia a geração de gráficos
+    plt.figure()
+
+def gerar_todos_graficos(nome_arquivo: str, caminho_graficos: str):
+    """Gera todos os gráficos necessários para o relatório na pasta indicada
+
+    :param nome_arquivo: Nome do arquivo onde os dados estão contidos
+    :type nome_arquivo: str
+    :param caminho_graficos: Nome do caminho para arquivar os gráficos
+    :type caminho_graficos: str
+    """    
+    graf_top_3_vis_mus(nome_arquivo, caminho_graficos)
+    graf_top_3_dur_mus(nome_arquivo, caminho_graficos)
+    graf_dur_vis(nome_arquivo, caminho_graficos)
+    graf_var_letra_mus(nome_arquivo, caminho_graficos)
+    graf_alb_decada(nome_arquivo, caminho_graficos)
+    graf_alb_decada(nome_arquivo, caminho_graficos)
